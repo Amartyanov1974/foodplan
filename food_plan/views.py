@@ -9,7 +9,9 @@ def index(request):
         context = {
             'username': username,
             }
-    return render(request, 'index.html', context=context)
+        return render(request, 'index.html', context=context)
+    return render(request, 'index.html')
+
 
 def lk(request):
     context = {}
