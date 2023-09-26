@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login,logout, authenticate
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
+User._meta.get_field('email')._unique = True
 
 
 def index(request):
@@ -14,12 +15,35 @@ def index(request):
 
 
 def lk(request):
-    context = {}
-    return render(request, 'lk.html', )
+    username = request.session['user_name']
+    context = {
+        'username': username,
+        }
+    return render(request, 'lk.html', context=context)
+
+
+def auth_message(request):
+    context = {
+        'message': request.session.get('message'),
+        }
+    request.session['message'] =''
+    return render(request, 'auth.html', context=context)
 
 def auth(request):
-
-    context = {}
+    if request.method == 'POST':
+        username = request.POST['email']
+        password = request.POST['passwd']
+        try:
+            user = authenticate(username=username, password=password)
+        except:
+            user=None
+        if not user:
+            request.session['message'] = 'Ошибка авторизации'
+            return redirect('auth_message')
+        login(request, user)
+        user = User.objects.get(username=username)
+        request.session['user_name'] = user.first_name
+        return redirect('/')
     return render(request, 'auth.html', )
 
 def deauth(request):
@@ -36,7 +60,8 @@ def registration_message(request):
 
 def registration(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        first_name = request.POST['username']
+        username = request.POST['email']
         password = request.POST['passwd']
         passwordconfirm = request.POST['passwdconfirm']
         email = request.POST['email']
@@ -50,15 +75,16 @@ def registration(request):
         if not user:
             try:
                 user = User.objects.create_user(
-                    username=username,
+                    first_name=username,
+                    username=email,
                     password=password,
                     email=email,
                 )
             except:
-                request.session['message'] =  'Пользователь с таким именем существует'
+                request.session['message'] =  'Пользователь с такой почтой существует'
                 return redirect('registration_message')
         login(request, user)
-        request.session['user_name'] = username
+        request.session['user_name'] = first_name
         return redirect('/')
 
     return render(request, 'registration.html' )

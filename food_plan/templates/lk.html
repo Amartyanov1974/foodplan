@@ -17,7 +17,7 @@
                 <a class="navbar-brand" href="#">
                     <img src="{% static 'img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
                 </a>
-                <button class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green">Выйти</button>
+                <button class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green" onclick="location.href = '/deauth'">Выйти</button>
             </div>
         </nav>
     </header>
@@ -29,6 +29,13 @@
                         <h4 class="foodplan__backButton">
                             <strong><small><a href="#" class="link-secondary fw-light"></a></small></strong>
                         </h4>
+                        <a href="/" class="link-secondary fw-light foodplan__backButton">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="9%" height="9%" fill="currentColor" class="bi bi-arrow-left-circle"
+                                viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
+                            </svg>
+                        </a>
                         <h2 class="text-center"><strong>Личный кабинет</strong></h2>
                     </div>
 
@@ -38,9 +45,9 @@
                             <span class="badge rounded-circle position-absolute bottom-0 end-0 foodplan__bg_green avatar__plus"><a href="#"
                                     class="link-dark text-decoration-none align-middle">+</a></span>
                         </div>
-                        <h3 class="card-title text-center">Tim</h3>
+                        <h3 class="card-title text-center">{{username}}</h3>
                         <div class="d-block">
-                            <button class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green">Выйти</button>
+                            <button class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green" onclick="location.href = '/deauth'">Выйти</button>
                         </div>
                     </div>
 

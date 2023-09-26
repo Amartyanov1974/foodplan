@@ -47,18 +47,22 @@
                     <h2 class="text-center"><strong>Авторизация</strong></h2>
                 </div>
                 <div class="card px-5 py-3 d-flex align-items-center foodplan__shadow">
-                    <form>
+                    <form method="POST" action="auth">
+                        {% csrf_token %}
                         <h1 class="mb-4 text-center"><strong>Вход</strong></h1>
+                        {% if message%}
+                            <h7 class="mb-4 text-center"><strong>{{message}}</strong></h7>
+                        {% endif %}
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
                         </div>
                         <div class="mb-3">
                             <div class="d-flex align-items-center justify-content-between">
                                 <label for="exampleInputPassword1" class="form-label">Пароль</label>
                                 <small><a href="#" class="link-dark foodplan_green">Забыли пароль?</a></small>
                             </div>
-                            <input type="password" class="form-control" id="password">
+                            <input type="password" class="form-control" id="password" name="passwd">
                         </div>
                         <div class="row mb-3">
                             <div class="col-12 col-sm-6 mt-3">

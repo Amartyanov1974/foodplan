@@ -25,6 +25,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('lk', views.lk, name='lk'),
     path('auth', views.auth, name='auth'),
+    path('auth_message', views.auth_message, name='auth_message'),
     path('deauth', views.deauth, name='deauth'),
     path('registration', views.registration, name='registration'),
     path('registration_message', views.registration_message, name='registration_message'),
