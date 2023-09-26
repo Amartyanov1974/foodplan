@@ -23,11 +23,11 @@ from food_plan import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('lk.html', views.lk, name='lk'),
-    path('auth.html', views.auth, name='auth'),
-    path('registration.html', views.registration, name='registration'),
-    path('order.html', views.order, name='order'),
-    path('card1.html', views.card1, name='card1'),
-    path('card2.html', views.card2, name='card2'),
-    path('card3.html', views.card3, name='card3'),
+    path('lk', views.lk, name='lk'),
+    path('auth', views.auth, name='auth'),
+    path('registration', views.registration, name='registration'),
+    path('order', views.order, name='order'),
+    path('card1', views.card1, name='card1'),
+    path('card2', views.card2, name='card2'),
+    path('card3', views.card3, name='card3'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
