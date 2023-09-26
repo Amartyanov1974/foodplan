@@ -59,12 +59,18 @@ def registration_message(request):
     return render(request, 'registration.html', context=context)
 
 def registration(request):
+    """Регистрация
+
+    Сохраняем имя в first_name объекта user, почту используем в качестве логина
+
+    Проверяем подтвержение пароля и уникальность логина (почты)
+    """
     if request.method == 'POST':
         first_name = request.POST['username']
         username = request.POST['email']
+        email = request.POST['email']
         password = request.POST['passwd']
         passwordconfirm = request.POST['passwdconfirm']
-        email = request.POST['email']
         if password != passwordconfirm:
             request.session['message'] = 'Пароли не совпадают'
             return redirect('registration_message')
@@ -75,8 +81,8 @@ def registration(request):
         if not user:
             try:
                 user = User.objects.create_user(
-                    first_name=username,
-                    username=email,
+                    first_name=first_name,
+                    username=username,
                     password=password,
                     email=email,
                 )
