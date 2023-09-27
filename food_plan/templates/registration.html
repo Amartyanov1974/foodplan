@@ -50,9 +50,14 @@
                 <div class="card px-5 py-3 d-flex align-items-center foodplan__shadow">
                     <form method="POST" action="registration">
                         {% csrf_token %}
-                        <h1 class="mb-4 text-center"><strong>Регистрация</strong></h1>
+                        <h2 class="mb-4 text-center"><strong>Регистрация</strong></h2>
                         {% if message%}
-                            <h7 class="mb-4 text-center"><strong>{{message}}</strong></h7>
+                            <dialog open id="closeMe" class="foodplan__border_green foodplan_green foodplan__shadow" aria-modal="true">
+                                <h2 class="text-center"><strong>{{message}}</strong></h2>
+                                <form method="dialog"><br>
+                                    <center><button type="submit" class="btn shadow-nonew-100 btn-outline-success foodplan_green foodplan__border_green">Закрыть</button></center>
+                                </form>
+                            </dialog>
                         {% endif %}
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Имя</label>
