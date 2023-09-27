@@ -30,6 +30,12 @@ def auth_message(request):
     return render(request, 'auth.html', context=context)
 
 def auth(request):
+    """ Авторизация пользователя
+
+    До авторизации request.user="AnonymousUser"
+
+    После авторизации request.user=user (email)
+    """
     if request.method == 'POST':
         username = request.POST['email']
         password = request.POST['passwd']
