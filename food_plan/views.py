@@ -15,12 +15,13 @@ def index(request):
 
 
 def lk(request):
-    username = request.session['user_name']
-    context = {
-        'username': username,
-        }
-    return render(request, 'lk.html', context=context)
-
+    if 'user_name' in request.session:
+        username = request.session['user_name']
+        context = {
+            'username': username,
+            }
+        return render(request, 'lk.html', context=context)
+    return redirect('/')
 
 def auth_message(request):
     context = {
