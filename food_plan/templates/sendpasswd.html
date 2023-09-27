@@ -15,9 +15,9 @@
                     <h2 class="text-center"><strong>Авторизация</strong></h2>
                 </div>
                 <div class="card px-5 py-3 d-flex align-items-center foodplan__shadow">
-                    <form method="POST" action="auth">
+                    <form method="POST" action="send">
                         {% csrf_token %}
-                        <h2 class="mb-4 text-center"><strong>Вход</strong></h2>
+                        <h2 class="mb-4 text-center"><strong>Отправить новый пароль на почту</strong></h2>
                         {% if message%}
                             <dialog open id="closeMe" class="foodplan__border_green foodplan_green foodplan__shadow" aria-modal="true">
                                 <h2 class="text-center"><strong>{{message}}</strong></h2>
@@ -30,17 +30,10 @@
                             <label for="exampleInputEmail1" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
                         </div>
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <label for="exampleInputPassword1" class="form-label">Пароль</label>
-                                <small><a href="/send" class="link-dark foodplan_green">Забыли пароль?</a></small>
-                            </div>
-                            <input type="password" class="form-control" id="password" name="passwd">
-                        </div>
                         <div class="row mb-3">
                             <div class="col-12 col-sm-6 mt-3">
                                 <button type="submit"
-                                    class="btn w-100 btn-outline-success shadow-none foodplan_green foodplan__border_green">Войти</button>
+                                    class="btn w-100 btn-outline-success shadow-none foodplan_green foodplan__border_green">Отправить</button>
                             </div>
                             <div class="col-12 col-sm-6 mt-3 d-flex justify-content-center align-items-center">
                                 <small>Нет аккаунта? <a href="/registration" class="link-dark foodplan_green">Зарегистрируйтесь</a></small>
