@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-
+from django.conf import settings
 
 User._meta.get_field('email')._unique = True
 
@@ -86,16 +86,21 @@ def sendpasswd(request):
             return redirect('sendpasswd_message')
         chars = f'{string.ascii_letters}{string.digits}'
         new_passwd = ''.join([choice(chars) for i in range(7)])
-        user.set_password(new_passwd)
-        user.save()
-        send_mail(
-            'Новый пароль от Foodplane',
-            f'Ваш новый пароль: {new_passwd}',
-            '',
-            [email,],
-            fail_silently=False,
-        )
-        return redirect('auth')
+        try:
+            user.set_password(new_passwd)
+            user.save()
+            send_mail(
+                'Новый пароль от Foodplane',
+                f'Ваш новый пароль: {new_passwd}',
+                '',
+                [email,],
+                fail_silently=False,
+            )
+            request.session['message'] = 'Пароль выслан на вашу почту'
+            return redirect('auth_message')
+        except:
+            request.session['message'] = 'Сбой отправки почты'
+            return redirect('auth_message')
     return render(request, 'sendpasswd.html', )
 
 
