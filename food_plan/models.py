@@ -1,28 +1,81 @@
 from django.db import models
 from django.core import validators
+from django.contrib.auth.models import User
 
 
-class User(models.Model):
+User._meta.get_field('email')._unique = True
+
+
+class Foodstuff(models.Model):
+    name = models.CharField(verbose_name='Продукт',
+                            max_length=200)
+    price = models.DecimalField(verbose_name='Цена',
+                                max_digits=6,
+                                decimal_places=2)
+    weight = models.FloatField(verbose_name='Вес в кг',
+                               default=0.1)
+
+    def __str__(self) -> str:
+        return str(self.name)
+
+
+class MealPlan(models.Model):
+    MENU_CHOICES = [
+        ('Classic', 'Classic'),
+        ('Low Сarb', 'Low Сarb'),
+        ('Vegetarian', 'Vegetarian'),
+        ('Keto', 'Keto'),
+    ]
+    menu_type = models.CharField(verbose_name='Тип меню',
+                                 max_length=10,
+                                 choices=MENU_CHOICES,
+                                 default='Classic')
+    number_persons = models.IntegerField(verbose_name='Количество персон',
+                                         default=1)
+    allergies = models.ForeignKey(Foodstuff,
+                                  verbose_name="Продукты, на которые есть"
+                                  "алергия",
+                                  on_delete=models.CASCADE)
+    CALORIE_CHOICES = [
+        ('1000', 'Basic'),
+        ('1400', 'Fit'),
+        ('1800', 'Balance'),
+    ]
+    calories = models.CharField(verbose_name='Калорий в день',
+                                max_length=7,
+                                choices=CALORIE_CHOICES,
+                                default='1800')
+    MEAL_NUMBER_CHOICES = [
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+    ]
+    number_of_meals = models.CharField(max_length=1,
+                                       verbose_name='Приемов пищи в день',
+                                       choices=MEAL_NUMBER_CHOICES,
+                                       default='3')
+
+
+class Client(models.Model):
     SUBSCRIPTION_CHOICES = [
         ('R', 'Regular'),
         ('P', 'Premium')
     ]
-
-    subscription_type = models.CharField(verbose_name='Подписка',
-                                         max_length=7,
-                                         choices=SUBSCRIPTION_CHOICES,
-                                         default='R')
-    number_persons = models.IntegerField(verbose_name='Количество персон',
-                                         default=1)
-    email = models.EmailField(verbose_name='Email',
-                              max_length=254,
-                              validators=[validators.EmailValidator(
-                                            message='Invalid Email')])
+    user = models.ForeignKey(User,
+                             verbose_name='Пользователь',
+                             on_delete=models.CASCADE)
+    subscription = models.CharField(verbose_name='Подписка',
+                                    max_length=7,
+                                    choices=SUBSCRIPTION_CHOICES,
+                                    default='R')
     subscription_expiration_date = models.DateField(
                                         verbose_name='Дата окончания подписки',
                                         null=True,
                                         blank=True,
                                         default=None)
+    meal_plan = models.ForeignKey(MealPlan,
+                                  verbose_name='План питания',
+                                  on_delete=models.CASCADE)
 
 
 class Recipe(models.Model):
@@ -36,26 +89,16 @@ class Recipe(models.Model):
                                  max_length=10,
                                  choices=MENU_CHOICES,
                                  default='Classic')
-    cooking_time = models.IntegerField(verbose_name='Время приготовления, мин.')
+    cooking_time = models.IntegerField(
+        verbose_name='Время приготовления, мин.')
     calories = models.IntegerField(verbose_name='Калорий на 100г.')
     fats = models.IntegerField(verbose_name='Жиров на 100г.')
     proteins = models.IntegerField(verbose_name='Белков на 100г.')
     carbs = models.IntegerField(verbose_name='Углеводов на 100г.')
 
-
     def calculate_budget(self):
         # Add budget calculation for each week
         pass
-
-
-class Foodstuff(models.Model):
-    name = models.CharField(verbose_name='Продукт',
-                            max_length=200)
-    price = models.DecimalField(verbose_name='Цена',
-                                max_digits=6,
-                                decimal_places=2)
-    weight = models.FloatField(verbose_name='Вес в кг',
-                               default=0.1)
 
 
 class FoodList(models.Model):
@@ -70,7 +113,7 @@ class FoodList(models.Model):
 
 
 class DishType(models.Model):
-    # examoles sauces,
+    # examples sauces, soups etc.
     name = models.CharField(max_length=200,
                             verbose_name='Тип блюда')
     recipe = models.ManyToManyField(Recipe,
