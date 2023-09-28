@@ -76,6 +76,9 @@ class Client(models.Model):
     meal_plan = models.ForeignKey(MealPlan,
                                   verbose_name='План питания',
                                   on_delete=models.CASCADE)
+    class Meta:
+        verbose_name = 'Клиент'
+        verbose_name_plural = 'Клиенты'
 
 
 class Recipe(models.Model):
@@ -99,6 +102,11 @@ class Recipe(models.Model):
     def calculate_budget(self):
         # Add budget calculation for each week
         pass
+
+    class Meta:
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
+
 
 
 class FoodList(models.Model):
