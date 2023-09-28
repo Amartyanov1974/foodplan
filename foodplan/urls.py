@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from food_plan import views
+from food_plan import views, payment_views
 
 
 urlpatterns = [
@@ -25,6 +25,8 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('lk', views.lk, name='lk'),
     path('auth', views.auth, name='auth'),
+    path('send', views.sendpasswd, name='send'),
+    path('sendpasswd_message', views.sendpasswd_message, name='sendpasswd_message'),
     path('auth_message', views.auth_message, name='auth_message'),
     path('deauth', views.deauth, name='deauth'),
     path('registration', views.registration, name='registration'),
@@ -33,4 +35,6 @@ urlpatterns = [
     path('card1', views.card1, name='card1'),
     path('card2', views.card2, name='card2'),
     path('card3', views.card3, name='card3'),
+    path('payment/', payment_views.get_payment, name='payment'),
+    path('accept_payment/', payment_views.accept_payment, name='accept_payment'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
