@@ -1,4 +1,4 @@
 django==3.2.20
 django-debug-toolbar==3.2.1
 environs[django]==9.3.2
-
+Pillow==10.0.1
