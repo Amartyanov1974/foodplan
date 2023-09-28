@@ -24,6 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
+SHOP_ACCOUNT_ID = env.str('SHOP_ACCOUNT_ID')
+SHOP_SECRET_KEY = env.str('SHOP_SECRET_KEY')
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY', 'replace_me')
 
@@ -32,12 +35,12 @@ DEBUG = env.bool('DEBUG', True)
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['127.0.0.1', 'localhost'])
 
-EMAIL_HOST=env.str('EMAIL_HOST', '')
-DEFAULT_FROM_EMAIL=env.str('EMAIL_HOST_USER', '')
-EMAIL_PORT=env.int('EMAIL_PORT', '')
-EMAIL_HOST_USER=env.str('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD=env.str('EMAIL_HOST_PASSWORD', '')
-EMAIL_USE_SSL=env.bool('EMAIL_USE_SSL', '')
+EMAIL_HOST=env.str('EMAIL_HOST', 'smtp.yandex.ru')
+DEFAULT_FROM_EMAIL=env.str('EMAIL_HOST_USER', 'user@yandex.ru')
+EMAIL_PORT=env.int('EMAIL_PORT', 465)
+EMAIL_HOST_USER=env.str('EMAIL_HOST_USER', 'user')
+EMAIL_HOST_PASSWORD=env.str('EMAIL_HOST_PASSWORD', 'passwd')
+EMAIL_USE_SSL=env.bool('EMAIL_USE_SSL', True)
 
 # Application definition
 

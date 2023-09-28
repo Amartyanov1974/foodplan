@@ -1,13 +1,11 @@
-from environs import Env
+from django.conf import settings
 from django.shortcuts import render, redirect
 from yookassa import Configuration, Payment
 
 
 def get_payment(request):
-    env = Env()
-    env.read_env()
-    Configuration.account_id = env.str('SHOP_ACCOUNT_ID')
-    Configuration.secret_key = env.str('SHOP_SECRET_KEY')
+    Configuration.account_id = settings.SHOP_ACCOUNT_ID
+    Configuration.secret_key = settings.SHOP_SECRET_KEY
     if request.GET:
         payment = Payment.create({
             "amount": {
