@@ -60,7 +60,6 @@ class Foodstuff(models.Model):
 
 class FoodList(models.Model):
     recipe = models.ManyToManyField(Recipe,
-                                    on_delete=models.SET_NULL,
                                     related_name='food_lists')
     food_name = models.ManyToManyField(Foodstuff,
                                        verbose_name='Продукт')
@@ -75,7 +74,6 @@ class DishType(models.Model):
     name = models.CharField(max_length=200,
                             verbose_name='Тип блюда')
     recipe = models.ManyToManyField(Recipe,
-                                    on_delete=models.SET_NULL,
                                     related_name='dish_types')
 
 
