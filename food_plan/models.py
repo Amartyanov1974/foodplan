@@ -41,10 +41,20 @@ class Client(models.Model):
                                         blank=True,
                                         default=None)
 
+    @property
+    def user_email(self):
+        return self.user.email
+
+    @property
+    def user_name(self):
+        return self.user.first_name
 
     class Meta:
         verbose_name = 'Клиент'
         verbose_name_plural = 'Клиенты'
+
+    def __str__(self):
+        return f'{self.user_name} {self.user_email}'
 
 
 class MealPlan(models.Model):
@@ -190,4 +200,3 @@ class Description(models.Model):
         ordering = ['text_position']
         verbose_name = 'Описание рецепта'
         verbose_name_plural = 'Описания рецептов'
-

@@ -34,7 +34,8 @@ class ImageAdmin(admin.ModelAdmin):
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ['user', 'subscription', 'subscription_expiration_date']
+    list_display = ['user_name', 'user_email', 'subscription', 'subscription_expiration_date']
+    readonly_fields = ['user']
 
 
 @admin.register(FoodList)
