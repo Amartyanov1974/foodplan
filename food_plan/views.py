@@ -22,9 +22,11 @@ def index(request):
 
 def lk(request):
     if 'user_name' in request.session:
+        client = Client.objects.get(user=request.user)
         username = request.session['user_name']
         context = {
             'username': username,
+            'email': client.user_email,
             }
         return render(request, 'lk.html', context=context)
     return redirect('/')
@@ -57,6 +59,37 @@ def auth(request):
         request.session['user_name'] = user.first_name
         return redirect('/')
     return render(request, 'auth.html', )
+
+def deauth(request):
+    logout(request)
+    request.session['user_name'] = ''
+    return redirect('/')
+
+def change_passwd_message(request):
+    context = {
+        'message': request.session.get('message'),
+        'username': request.user.first_name,
+        'email': request.user.email,
+        }
+    request.session['message'] =''
+    return render(request, 'lk.html', context=context)
+
+def change_passwd(request):
+    if request.method == 'POST' and 'passwd' in request.POST:
+        passwd=request.POST['passwd']
+        passwdconfirm=request.POST['passwdconfirm']
+        if passwd != passwdconfirm or len(passwd)<1:
+            request.session['message'] = 'Пароли не совпадают или поля не заполнены'
+            return redirect('change_passwd_message')
+        user = User.objects.get(email=request.user)
+        user.set_password(passwd)
+        user.save()
+        request.session['user_name'] = ''
+        return redirect('/')
+    return redirect('lk')
+
+
+
 
 def sendpasswd_message(request):
     context = {
@@ -103,12 +136,6 @@ def sendpasswd(request):
             request.session['message'] = 'Сбой отправки почты'
             return redirect('auth_message')
     return render(request, 'sendpasswd.html', )
-
-
-def deauth(request):
-    logout(request)
-    request.session['user_name'] = ''
-    return redirect('/')
 
 def registration_message(request):
     context = {

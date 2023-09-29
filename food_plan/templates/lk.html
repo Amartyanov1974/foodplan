@@ -54,34 +54,39 @@
                             </ul>
                             <div class="tab-content mt-2">
                                 <div class="tab-pane fade show active" id="data">
-                                    <form action="">
+                                    <form method="POST" action="change_passwd">
+                                        {% csrf_token %}
                                         <div class="mb-3">
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <label for="exampleInputEmail1" class="form-label">Имя</label>
-                                                <small><a href="#" class="link-dark foodplan_green">изменить</a></small>
                                             </div>
-
-                                            <input type="text" class="form-control" id="name">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="exampleInputEmail1" class="form-label">Email</label>
-                                            <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                                            <input type="text" class="form-control" id="name" name="username" value={{username}} readonly>
                                         </div>
                                         <div class="mb-3">
                                             <div class="d-flex align-items-center justify-content-between">
-                                                <label for="exampleInputPassword1" class="form-label">Пароль</label>
-                                                <small><a href="#" class="link-dark foodplan_green">изменить</a></small>
+                                                <label for="exampleInputEmail1" class="form-label">Email</label>
                                             </div>
-
-                                            <input type="password" class="form-control" id="password">
+                                            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" value={{email}} readonly>
+                                        </div>
+                                        {% if message%}
+                                        <dialog open id="closeMe" class="foodplan__border_green foodplan_green foodplan__shadow" aria-modal="true">
+                                            <h2 class="text-center"><strong>{{message}}</strong></h2>
+                                            <form method="dialog"><br>
+                                                <center><button type="submit" class="btn shadow-nonew-100 btn-outline-success foodplan_green foodplan__border_green">Закрыть</button></center>
+                                            </form>
+                                        </dialog>
+                                        {% endif %}
+                                        <div class="mb-3">
+                                            <label for="exampleInputPassword1" class="form-label">Пароль</label>
+                                            <input type="password" class="form-control" id="password" name="passwd">
                                         </div>
                                         <div class="mb-3">
                                             <label for="exampleInputPassword1" class="form-label">Подтверждение пароля</label>
-                                            <input type="password" class="form-control" id="PasswordConfirm">
+                                            <input type="password" class="form-control" id="PasswordConfirm" name="passwdconfirm">
                                         </div>
                                         <div class="d-block">
-                                            <button type="submit" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Сохранить
-                                                изменения</button>
+                                            <button type="submit" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Изменить
+                                                пароль</button>
                                         </div>
                                     </form>
                                 </div>
