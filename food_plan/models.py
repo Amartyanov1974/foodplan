@@ -1,5 +1,7 @@
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
+from django.dispatch import receiver
 
 
 User._meta.get_field('email')._unique = True
@@ -14,45 +16,9 @@ class Foodstuff(models.Model):
     weight = models.FloatField(verbose_name='Вес в кг',
                                default=0.1)
 
-    def __str__(self) -> str:
-        return str(self.name)
-
-
-class MealPlan(models.Model):
-    MENU_CHOICES = [
-        ('Classic', 'Classic'),
-        ('Low Сarb', 'Low Сarb'),
-        ('Vegetarian', 'Vegetarian'),
-        ('Keto', 'Keto'),
-    ]
-    menu_type = models.CharField(verbose_name='Тип меню',
-                                 max_length=10,
-                                 choices=MENU_CHOICES,
-                                 default='Classic')
-    number_persons = models.IntegerField(verbose_name='Количество персон',
-                                         default=1)
-    allergies = models.ManyToManyField(
-                    Foodstuff,
-                    verbose_name='Продукты, на которые есть алергия',
-                    related_name='meal_plans')
-    CALORIE_CHOICES = [
-        ('1000', 'Basic'),
-        ('1400', 'Fit'),
-        ('1800', 'Balance'),
-    ]
-    calories = models.CharField(verbose_name='Калорий в день',
-                                max_length=7,
-                                choices=CALORIE_CHOICES,
-                                default='1800')
-    MEAL_NUMBER_CHOICES = [
-        ('2', '2'),
-        ('3', '3'),
-        ('4', '4'),
-    ]
-    number_of_meals = models.CharField(max_length=1,
-                                       verbose_name='Приемов пищи в день',
-                                       choices=MEAL_NUMBER_CHOICES,
-                                       default='3')
+    class Meta:
+        verbose_name = 'Все продукты'
+        verbose_name_plural = 'Все продукты'
 
 
 class Client(models.Model):
@@ -74,13 +40,63 @@ class Client(models.Model):
                                         null=True,
                                         blank=True,
                                         default=None)
-    meal_plan = models.ForeignKey(MealPlan,
-                                  verbose_name='План питания',
-                                  on_delete=models.CASCADE,
-                                  related_name='clients')
+
+
     class Meta:
         verbose_name = 'Клиент'
         verbose_name_plural = 'Клиенты'
+
+
+class MealPlan(models.Model):
+    client = models.OneToOneField(Client,
+                                  verbose_name='Клиент',
+                                  on_delete=models.CASCADE,
+                                  related_name='meal_plan',
+                                  blank=False,
+                                  null=True)
+    MENU_CHOICES = [
+        ('Classic', 'Classic'),
+        ('Low Сarb', 'Low Сarb'),
+        ('Vegetarian', 'Vegetarian'),
+        ('Keto', 'Keto'),
+    ]
+    menu_type = models.CharField(verbose_name='Тип меню',
+                                 max_length=10,
+                                 choices=MENU_CHOICES,
+                                 default='Classic')
+    number_persons = models.IntegerField(verbose_name='Количество персон',
+                                         default=1)
+    allergies = models.ManyToManyField(
+                    Foodstuff,
+                    verbose_name='Продукты, на которые есть алергия',
+                    related_name='meal_plans',
+                    blank=True,
+                    default=None)
+    CALORIE_CHOICES = [
+        ('1000', 'Basic'),
+        ('1400', 'Fit'),
+        ('1800', 'Balance'),
+    ]
+    calories = models.CharField(verbose_name='Калорий в день',
+                                max_length=7,
+                                choices=CALORIE_CHOICES,
+                                default='1800')
+    MEAL_NUMBER_CHOICES = [
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+    ]
+    number_of_meals = models.CharField(max_length=1,
+                                       verbose_name='Приемов пищи в день',
+                                       choices=MEAL_NUMBER_CHOICES,
+                                       default='3')
+
+    class Meta:
+        verbose_name = 'План питания'
+        verbose_name_plural = 'Планы питания'
+
+    def __str__(self) -> str:
+        return str(self.allergies)
 
 
 class Recipe(models.Model):
@@ -125,6 +141,11 @@ class FoodList(models.Model):
     # Add unit price calculation for each list_of_products
     # depending on the number of persons
 
+    class Meta:
+        verbose_name = 'Список продуктов'
+        verbose_name_plural = 'Списки продуктов'
+
+
 
 class DishType(models.Model):
     # examples sauces, soups etc.
@@ -132,6 +153,10 @@ class DishType(models.Model):
                             verbose_name='Тип блюда')
     recipes = models.ManyToManyField(Recipe,
                                      related_name='dish_types')
+
+    class Meta:
+        verbose_name = 'Разновидность бюда'
+        verbose_name_plural = 'Разновидности блюд'
 
 
 class Image(models.Model):
@@ -147,6 +172,8 @@ class Image(models.Model):
 
     class Meta:
         ordering = ['image_position']
+        verbose_name = 'Картинка рецепта'
+        verbose_name_plural = 'Картинки рецептов'
 
 
 class Description(models.Model):
@@ -161,3 +188,6 @@ class Description(models.Model):
 
     class Meta:
         ordering = ['text_position']
+        verbose_name = 'Описание рецепта'
+        verbose_name_plural = 'Описания рецептов'
+

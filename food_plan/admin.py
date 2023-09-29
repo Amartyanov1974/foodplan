@@ -31,10 +31,10 @@ class ImageAdmin(admin.ModelAdmin):
     '''Admin panel for Image model'''
     pass
 
+
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ['user', 'subscription', 'subscription_expiration_date',
-                    'meal_plan']
+    list_display = ['user', 'subscription', 'subscription_expiration_date']
 
 
 @admin.register(FoodList)
@@ -59,5 +59,5 @@ class FoodstuffAdmin(admin.ModelAdmin):
 
 @admin.register(MealPlan)
 class MealPlanAdmin(admin.ModelAdmin):
-    list_display = ['menu_type', 'number_persons',
+    list_display = ['client', 'menu_type', 'number_persons',
                     'calories', 'number_of_meals']
