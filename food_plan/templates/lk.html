@@ -54,7 +54,7 @@
                             </ul>
                             <div class="tab-content mt-2">
                                 <div class="tab-pane fade show active" id="data">
-                                    <form method="POST" action="change_passwd">
+                                    <form method="POST" action="change_email">
                                         {% csrf_token %}
                                         <div class="mb-3">
                                             <div class="d-flex align-items-center justify-content-between">
@@ -66,8 +66,11 @@
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <label for="exampleInputEmail1" class="form-label">Email</label>
                                             </div>
-                                            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" value={{email}} readonly>
+                                            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" value={{email}}>
+                                            <button type="submit" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Изменить
+                                                почту</button>
                                         </div>
+                                    </form>
                                         {% if message%}
                                         <dialog open id="closeMe" class="foodplan__border_green foodplan_green foodplan__shadow" aria-modal="true">
                                             <h2 class="text-center"><strong>{{message}}</strong></h2>
@@ -76,6 +79,8 @@
                                             </form>
                                         </dialog>
                                         {% endif %}
+                                    <form method="POST" action="change_passwd">
+                                    {% csrf_token %}
                                         <div class="mb-3">
                                             <label for="exampleInputPassword1" class="form-label">Пароль</label>
                                             <input type="password" class="form-control" id="password" name="passwd">

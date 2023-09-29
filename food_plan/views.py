@@ -88,7 +88,29 @@ def change_passwd(request):
         return redirect('/')
     return redirect('lk')
 
+def change_email_message(request):
+    context = {
+        'message': request.session.get('message'),
+        'username': request.user.first_name,
+        'email': request.user.email,
+        }
+    request.session['message'] =''
+    return render(request, 'lk.html', context=context)
 
+def change_email(request):
+    if request.method == 'POST' and 'email' in request.POST:
+        email=request.POST['email']
+        try:
+            user = User.objects.get(email=request.user)
+            user.username = email
+            user.email = email
+            user.save()
+        except:
+            request.session['message'] = 'Такая почта уже зарегистрирована'
+            return redirect('change_email_message')
+        request.session['user_name'] = ''
+        return redirect('/')
+    return redirect('lk')
 
 
 def sendpasswd_message(request):
