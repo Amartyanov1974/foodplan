@@ -5,7 +5,6 @@ from food_plan.models import (Client, MealPlan, FoodList, Foodstuff,
                               Recipe, DishType, Image, Description)
 
 
-
 class ImageInline(SortableStackedInline):
     '''Inline for images to show in Place model'''
     model = Image
@@ -17,12 +16,17 @@ class ImageInline(SortableStackedInline):
                            obj.image.url)
 
 
+class DescriptionInline(SortableStackedInline):
+    '''Inline for images to show in Place model'''
+    model = Description
+
+
 @admin.register(Recipe)
 class RecipeAdmin(SortableAdminBase, admin.ModelAdmin):
     list_display = ['menu_type', 'cooking_time', 'calories',
                     'fats', 'proteins', 'carbs']
     inlines = [
-        ImageInline,
+        ImageInline, DescriptionInline
     ]
 
 
@@ -34,7 +38,8 @@ class ImageAdmin(admin.ModelAdmin):
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ['user_name', 'user_email', 'subscription', 'subscription_expiration_date']
+    list_display = ['user_name', 'user_email', 'subscription',
+                    'subscription_expiration_date']
     readonly_fields = ['user']
 
 
@@ -50,7 +55,7 @@ class DishTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Description)
 class DescriptionAdmin(admin.ModelAdmin):
-    list_display = ['recipe', 'text', 'text_position']
+    list_display = ['recipe', 'text']
 
 
 @admin.register(Foodstuff)

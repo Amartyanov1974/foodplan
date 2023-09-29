@@ -1,7 +1,5 @@
 from django.db import models
-from django.db.models.signals import post_save
 from django.contrib.auth.models import User
-from django.dispatch import receiver
 
 
 User._meta.get_field('email')._unique = True
@@ -19,6 +17,9 @@ class Foodstuff(models.Model):
     class Meta:
         verbose_name = 'Все продукты'
         verbose_name_plural = 'Все продукты'
+
+    def __str__(self) -> str:
+        return str(self.name)
 
 
 class Client(models.Model):
@@ -40,6 +41,9 @@ class Client(models.Model):
                                         null=True,
                                         blank=True,
                                         default=None)
+    free_recipes = models.IntegerField(
+                    verbose_name='Доступно бесплатных рецептов',
+                    default=3)
 
     @property
     def user_email(self):
@@ -55,6 +59,10 @@ class Client(models.Model):
 
     def __str__(self):
         return f'{self.user_name} {self.user_email}'
+
+    def update_free_recipe(self):
+        if self.free_recipes:
+            self.free_recipes -= 1
 
 
 class MealPlan(models.Model):
@@ -110,6 +118,8 @@ class MealPlan(models.Model):
 
 
 class Recipe(models.Model):
+    name = models.CharField(max_length=250,
+                            verbose_name='Название рецепта')
     MENU_CHOICES = [
         ('Classic', 'Classic'),
         ('Low Сarb', 'Low Сarb'),
@@ -130,9 +140,8 @@ class Recipe(models.Model):
                                         verbose_name='Планы питания',
                                         related_name='recipes')
 
-    def calculate_budget(self):
-        # Add budget calculation for each week
-        pass
+    def __str__(self) -> str:
+        return str(self.name)
 
     class Meta:
         verbose_name = 'Рецепт'
@@ -151,10 +160,12 @@ class FoodList(models.Model):
     # Add unit price calculation for each list_of_products
     # depending on the number of persons
 
+    def calculate_budget(self):
+        pass
+
     class Meta:
         verbose_name = 'Список продуктов'
         verbose_name_plural = 'Списки продуктов'
-
 
 
 class DishType(models.Model):
