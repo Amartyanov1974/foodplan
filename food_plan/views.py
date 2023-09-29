@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
+from .models import Client
 from django.conf import settings
 
 User._meta.get_field('email')._unique = True
@@ -143,6 +144,9 @@ def registration(request):
                     username=username,
                     password=password,
                     email=email,
+                )
+                client = Client.objects.create(
+                    user=user,
                 )
             except:
                 request.session['message'] =  'Пользователь с такой почтой существует'
