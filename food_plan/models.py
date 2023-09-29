@@ -31,10 +31,10 @@ class MealPlan(models.Model):
                                  default='Classic')
     number_persons = models.IntegerField(verbose_name='Количество персон',
                                          default=1)
-    allergies = models.ForeignKey(Foodstuff,
-                                  verbose_name="Продукты, на которые есть"
-                                  "алергия",
-                                  on_delete=models.CASCADE)
+    allergies = models.ManyToManyField(
+                    Foodstuff,
+                    verbose_name='Продукты, на которые есть алергия',
+                    related_name='meal_plans')
     CALORIE_CHOICES = [
         ('1000', 'Basic'),
         ('1400', 'Fit'),
@@ -60,9 +60,11 @@ class Client(models.Model):
         ('R', 'Regular'),
         ('P', 'Premium')
     ]
-    user = models.ForeignKey(User,
-                             verbose_name='Пользователь',
-                             on_delete=models.CASCADE)
+    user = models.OneToOneField(User,
+                                verbose_name='Пользователь',
+                                on_delete=models.CASCADE,
+                                primary_key=True,
+                                related_name='client')
     subscription = models.CharField(verbose_name='Подписка',
                                     max_length=7,
                                     choices=SUBSCRIPTION_CHOICES,
@@ -74,7 +76,8 @@ class Client(models.Model):
                                         default=None)
     meal_plan = models.ForeignKey(MealPlan,
                                   verbose_name='План питания',
-                                  on_delete=models.CASCADE)
+                                  on_delete=models.CASCADE,
+                                  related_name='clients')
     class Meta:
         verbose_name = 'Клиент'
         verbose_name_plural = 'Клиенты'
@@ -97,6 +100,9 @@ class Recipe(models.Model):
     fats = models.IntegerField(verbose_name='Жиров на 100г.')
     proteins = models.IntegerField(verbose_name='Белков на 100г.')
     carbs = models.IntegerField(verbose_name='Углеводов на 100г.')
+    meal_plans = models.ManyToManyField(MealPlan,
+                                        verbose_name='Планы питания',
+                                        related_name='recipes')
 
     def calculate_budget(self):
         # Add budget calculation for each week
@@ -109,10 +115,11 @@ class Recipe(models.Model):
 
 
 class FoodList(models.Model):
-    recipe = models.ManyToManyField(Recipe,
-                                    related_name='food_lists')
-    food_name = models.ManyToManyField(Foodstuff,
-                                       verbose_name='Продукт')
+    recipes = models.ManyToManyField(Recipe,
+                                     related_name='food_lists')
+    food_names = models.ManyToManyField(Foodstuff,
+                                        verbose_name='Продукты',
+                                        related_name='food_lists')
     weight = models.FloatField(verbose_name='Вес в кг',
                                default=0.1)
     # Add unit price calculation for each list_of_products
@@ -123,8 +130,8 @@ class DishType(models.Model):
     # examples sauces, soups etc.
     name = models.CharField(max_length=200,
                             verbose_name='Тип блюда')
-    recipe = models.ManyToManyField(Recipe,
-                                    related_name='dish_types')
+    recipes = models.ManyToManyField(Recipe,
+                                     related_name='dish_types')
 
 
 class Image(models.Model):

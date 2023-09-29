@@ -59,5 +59,5 @@ class FoodstuffAdmin(admin.ModelAdmin):
 
 @admin.register(MealPlan)
 class MealPlanAdmin(admin.ModelAdmin):
-    list_display = ['menu_type', 'number_persons', 'allergies',
+    list_display = ['menu_type', 'number_persons',
                     'calories', 'number_of_meals']
