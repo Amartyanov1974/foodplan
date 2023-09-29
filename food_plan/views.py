@@ -12,9 +12,8 @@ User._meta.get_field('email')._unique = True
 
 def index(request):
     if 'user_name' in request.session:
-        username = request.session['user_name']
         context = {
-            'username': username,
+            'username': request.session['user_name'],
             }
         return render(request, 'index.html', context=context)
     return render(request, 'index.html')
@@ -23,9 +22,8 @@ def index(request):
 def lk(request):
     if 'user_name' in request.session:
         client = Client.objects.get(user=request.user)
-        username = request.session['user_name']
         context = {
-            'username': username,
+            'username': request.session['user_name'],
             'email': client.user_email,
             }
         return render(request, 'lk.html', context=context)
@@ -207,8 +205,14 @@ def registration(request):
     return render(request, 'registration.html' )
 
 def order(request):
-    context = {}
-    return render(request, 'order.html' )
+    if request.user.is_authenticated:
+        client = Client.objects.get(user=request.user)
+        context = {
+            'username': request.session['user_name'],
+            'email': client.user_email,
+            }
+        return render(request, 'order.html', context=context)
+    return render(request, 'auth.html' )
 
 def card1(request):
     context = {}

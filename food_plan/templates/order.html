@@ -18,7 +18,14 @@
                     <img src="{% static 'img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
                 </a>
                 <h3 class="text-secondary mt-2 me-2">Стоимость: 00000₽</h3>
-                <button form="order" type="submit" class="btn shadow-none btn-sm btn-outline-success foodplan_green foodplan__border_green">Оплатить</button>
+                {% if username %}
+                    <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green" onclick="location.href = '/lk'">Личный кабинет: {{username}}</button>
+                    <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green" onclick="location.href = '/deauth'">Выйти</button>
+                {% else %}
+                    <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green" onclick="location.href = '/auth'">Войти</button>
+                    <!-- Кнопка для тестирования оплаты, тестовая карта 4111 1111 1111 1111 срок 12/26  CVC 098 -->
+                    <button form="order" type="submit" class="btn shadow-none btn-sm btn-outline-success foodplan_green foodplan__border_green">Оплатить</button>
+                {% endif %}
             </div>
         </nav>
     </header>
