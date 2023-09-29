@@ -1,5 +1,4 @@
-django==3.2.20
-django-debug-toolbar==3.2.1
+django==4.0
 environs[django]==9.3.2
 yookassa==2.4.0
 Pillow==10.0.1
