@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 
 User._meta.get_field('email')._unique = True
 
@@ -69,18 +69,6 @@ class Foodstuff(models.Model):
         return str(self.name)
 
 
-class Transaction(models.Model):
-    order_name = models.CharField(verbose_name='Название подписки',
-                                  choices=ORDER_CHOICES,
-                                  max_length=8)
-    date = models.DateField(verbose_name='Дата платежа')
-
-    class Meta:
-        ordering = ['date']
-        verbose_name = 'Транзакция'
-        verbose_name_plural = 'Транзакции'
-
-
 class Client(models.Model):
     user = models.OneToOneField(User,
                                 verbose_name='Пользователь',
@@ -96,10 +84,6 @@ class Client(models.Model):
                                         null=True,
                                         blank=True,
                                         default=None)
-    transaction = models.ForeignKey(Transaction,
-                                    verbose_name='Тразакции',
-                                    related_name='client',
-                                    on_delete=models.CASCADE)
 
     @property
     def user_email(self):
@@ -115,6 +99,25 @@ class Client(models.Model):
 
     def __str__(self):
         return f'{self.user_name} {self.user_email}'
+
+
+class Transaction(models.Model):
+    order_name = models.CharField(verbose_name='Название подписки',
+                                  choices=ORDER_CHOICES,
+                                  max_length=8)
+    date = models.DateField(verbose_name='Дата платежа',
+                            default=timezone.now,
+                            db_index=True)
+
+    client = models.ForeignKey(Client,
+                                    verbose_name='Клиент',
+                                    related_name='transaction',
+                                    on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['date']
+        verbose_name = 'Транзакция'
+        verbose_name_plural = 'Транзакции'
 
 
 class Recipe(models.Model):
