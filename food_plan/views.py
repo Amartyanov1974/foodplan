@@ -287,30 +287,28 @@ def purchase(request):
         if allergy6: allergy.append('Молочные продукты')
         if not allergy: allergy.append('Нет')
 
+        """
+        Здесь нужно выбрать рецепты и посчитать стоимость плана питания
+        """
+        price = 10000
 
-
-        description = {'foodtype': foodtype, 'limitation': limitation,
-                       'breakfast': breakfast, 'lunch': lunch,
-                       'dinner':dinner, 'dessert': dessert,
-                       'number_persons': number_persons, 'allergy1': allergy1,
-                       'allergy2' :allergy2, 'allergy3': allergy3,
-                       'allergy4': allergy4, 'allergy5': allergy5,
-                       'allergy6': allergy6}
-        print(description)
+        # Все параметры выбора рецептов в одном словаре, вдруг понадобиться
+        # description = {'foodtype': foodtype, 'limitation': limitation,
+                       # 'breakfast': breakfast, 'lunch': lunch,
+                       # 'dinner':dinner, 'dessert': dessert,
+                       # 'number_persons': number_persons, 'allergy1': allergy1,
+                       # 'allergy2' :allergy2, 'allergy3': allergy3,
+                       # 'allergy4': allergy4, 'allergy5': allergy5,
+                       # 'allergy6': allergy6}
+        # print(description)
 
         foodtype_dict = {'veg': 'Вегетарианское', 'keto': 'Кето', 'low': 'Низкоуглеводное', 'classic': 'Классическое'}
-
-
-
         descriptions = f'Тип питания: {foodtype_dict[foodtype]}, срок: {limitation}, Количество персон: {number_persons}, Аллергия: {allergy}, Количество приемов пищи: {meal}'
-
-
-
 
         context = {
             'username': client.user_name,
             'descriptions': descriptions,
-            'price': 10000,
+            'price': price,
             }
 
         context.update(description)
