@@ -214,14 +214,27 @@ def order(request):
         return render(request, 'order.html', context=context)
     return render(request, 'auth.html' )
 
-def card1(request):
-    context = {}
-    return render(request, 'card1.html', )
+def card(request):
+    if request.user.is_authenticated:
+        client = Client.objects.get(user=request.user)
 
-def card2(request):
-    context = {}
-    return render(request, 'card2.html', )
+        ingredients = {'картошка': '500 гр', 'тушенка': '1 банка', }
+        name_recipe = 'Картошка с мясом'
+        recipe_description = 'Почистить картошку, нарезать кубиками. Через 10 минут добавить тушенку картошку. Жарить еще 10 минут.'
+        total_calories = 10000
+        """
+        Адрес картинки при текущей структуре базы будет recipe.images.image.url
+        """
+        img_url = ''
 
-def card3(request):
-    context = {}
-    return render(request, 'card3.html', )
+
+
+        context = {
+            'username': request.session['user_name'],
+            'name_recipe': name_recipe,
+            'recipe_description': recipe_description,
+            'total_calories': total_calories,
+            'ingredients': sorted(ingredients.items()),
+            }
+        return render(request, 'card.html', context=context)
+    return render(request, 'card.html', )
