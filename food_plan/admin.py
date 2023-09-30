@@ -1,6 +1,6 @@
 from django.contrib import admin
 from food_plan.models import (Client, MealPlan, FoodList,
-                              Foodstuff, Recipe, DishType, Transaction)
+                              Foodstuff, Recipe, Transaction)
 
 
 @admin.register(Recipe)
@@ -21,11 +21,6 @@ class FoodListAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(DishType)
-class DishTypeAdmin(admin.ModelAdmin):
-    list_display = ['name']
-
-
 @admin.register(Foodstuff)
 class FoodstuffAdmin(admin.ModelAdmin):
     list_display = ['name', 'price', 'weight', 'category']
@@ -33,8 +28,9 @@ class FoodstuffAdmin(admin.ModelAdmin):
 
 @admin.register(MealPlan)
 class MealPlanAdmin(admin.ModelAdmin):
-    list_display = ['client', 'menu_type', 'number_persons',
-                    'calories', 'number_of_meals']
+    list_display = ['client', 'menu_type',
+                    'number_persons', 'calories']
 
+@admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ['order_name', 'date']

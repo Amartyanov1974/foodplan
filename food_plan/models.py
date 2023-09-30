@@ -5,6 +5,50 @@ from django.contrib.auth.models import User
 User._meta.get_field('email')._unique = True
 
 
+DISH_CHOICES = [
+    ('breakfast', 'breakfast'),
+    ('lunch', 'lunch'),
+    ('dinner', 'dinner'),
+    ('dessert', 'dessert'),
+]
+
+CALORIE_CHOICES = [
+    ('Basic 1000', 'Basic'),
+    ('Fit 1400', 'Fit'),
+    ('Balance 1800', 'Balance'),
+]
+
+CATEGORY_CHOICES = [
+    ('рыба', 'рыба'),
+    ('мясо', 'мясо'),
+    ('зерновые продукты', 'зерновые продукты'),
+    ('продукты пчеловодства', 'продукты пчеловодства'),
+    ('орехи', 'орехи'),
+    ('бобовые продукты', 'бобовые продукты'),
+    ('молочные продукты', 'молочные продукты'),
+]
+
+ORDER_CHOICES = [
+    ('1 month', '1'),
+    ('3 month', '3'),
+    ('6 month', '6'),
+    ('9 month', '9'),
+    ('12 month', '12'),
+]
+
+SUBSCRIPTION_CHOICES = [
+    ('R', 'Regular'),
+    ('P', 'Premium'),
+]
+
+MENU_CHOICES = [
+    ('Classic', 'Classic'),
+    ('Low Сarb', 'Low Сarb'),
+    ('Vegetarian', 'Vegetarian'),
+    ('Keto', 'Keto'),
+]
+
+
 class Foodstuff(models.Model):
     name = models.CharField(verbose_name='Продукт',
                             max_length=200)
@@ -13,15 +57,6 @@ class Foodstuff(models.Model):
                                 decimal_places=2)
     weight = models.FloatField(verbose_name='Вес в кг',
                                default=0.1)
-    CATEGORY_CHOICES = [
-        ('рыба', 'рыба'),
-        ('мясо', 'мясо'),
-        ('зерновые продукты', 'зерновые продукты'),
-        ('продукты пчеловодства', 'продукты пчеловодства'),
-        ('орехи', 'орехи'),
-        ('бобовые продукты', 'бобовые продукты'),
-        ('молочные продукты', 'молочные продукты'),
-    ]
     category = models.CharField(max_length=21,
                                 choices=CATEGORY_CHOICES,
                                 verbose_name='Категория')
@@ -35,13 +70,6 @@ class Foodstuff(models.Model):
 
 
 class Transaction(models.Model):
-    ORDER_CHOICES = [
-        ('1 month', '1'),
-        ('3 month', '3'),
-        ('6 month', '6'),
-        ('9 month', '9'),
-        ('12 month', '12'),
-    ]
     order_name = models.CharField(verbose_name='Название подписки',
                                   choices=ORDER_CHOICES,
                                   max_length=8)
@@ -54,10 +82,6 @@ class Transaction(models.Model):
 
 
 class Client(models.Model):
-    SUBSCRIPTION_CHOICES = [
-        ('R', 'Regular'),
-        ('P', 'Premium')
-    ]
     user = models.OneToOneField(User,
                                 verbose_name='Пользователь',
                                 on_delete=models.CASCADE,
@@ -96,12 +120,6 @@ class Client(models.Model):
 class Recipe(models.Model):
     name = models.CharField(max_length=250,
                             verbose_name='Название рецепта')
-    MENU_CHOICES = [
-        ('Classic', 'Classic'),
-        ('Low Сarb', 'Low Сarb'),
-        ('Vegetarian', 'Vegetarian'),
-        ('Keto', 'Keto'),
-    ]
     menu_type = models.CharField(verbose_name='Тип меню',
                                  max_length=10,
                                  choices=MENU_CHOICES,
@@ -133,12 +151,6 @@ class MealPlan(models.Model):
                                   related_name='meal_plan',
                                   blank=False,
                                   null=True)
-    MENU_CHOICES = [
-        ('Classic', 'Classic'),
-        ('Low Сarb', 'Low Сarb'),
-        ('Vegetarian', 'Vegetarian'),
-        ('Keto', 'Keto'),
-    ]
     menu_type = models.CharField(verbose_name='Тип меню',
                                  max_length=10,
                                  choices=MENU_CHOICES,
@@ -151,27 +163,16 @@ class MealPlan(models.Model):
                     related_name='meal_plans',
                     blank=True,
                     default=None)
-    CALORIE_CHOICES = [
-        ('1000', 'Basic'),
-        ('1400', 'Fit'),
-        ('1800', 'Balance'),
-    ]
     calories = models.CharField(verbose_name='Калорий в день',
-                                max_length=7,
+                                max_length=12,
                                 choices=CALORIE_CHOICES,
-                                default='1800')
-    MEAL_NUMBER_CHOICES = [
-        ('2', '2'),
-        ('3', '3'),
-        ('4', '4'),
-    ]
-    number_of_meals = models.CharField(max_length=1,
-                                       verbose_name='Приемов пищи в день',
-                                       choices=MEAL_NUMBER_CHOICES,
-                                       default='3')
+                                default='Balance 1800')
     recipes = models.ManyToManyField(Recipe,
                                      verbose_name='Рецепты',
                                      related_name='meal_plans')
+    dish_type = models.CharField(verbose_name='Тип блюда',
+                                 choices=DISH_CHOICES,
+                                 max_length=9)
 
     class Meta:
         verbose_name = 'План питания'
@@ -189,21 +190,7 @@ class FoodList(models.Model):
                                         related_name='food_lists')
     weight = models.FloatField(verbose_name='Вес в кг',
                                default=0.1)
-    # Add unit price calculation for each list_of_products
-    # depending on the number of persons
 
     class Meta:
         verbose_name = 'Список продуктов'
         verbose_name_plural = 'Списки продуктов'
-
-
-class DishType(models.Model):
-    # examples sauces, soups etc.
-    name = models.CharField(max_length=200,
-                            verbose_name='Тип блюда')
-    recipes = models.ManyToManyField(Recipe,
-                                     related_name='dish_types')
-
-    class Meta:
-        verbose_name = 'Разновидность бюда'
-        verbose_name_plural = 'Разновидности блюд'
