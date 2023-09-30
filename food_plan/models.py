@@ -65,6 +65,37 @@ class Client(models.Model):
             self.free_recipes -= 1
 
 
+class Recipe(models.Model):
+    name = models.CharField(max_length=250,
+                            verbose_name='Название рецепта')
+    MENU_CHOICES = [
+        ('Classic', 'Classic'),
+        ('Low Сarb', 'Low Сarb'),
+        ('Vegetarian', 'Vegetarian'),
+        ('Keto', 'Keto'),
+    ]
+    menu_type = models.CharField(verbose_name='Тип меню',
+                                 max_length=10,
+                                 choices=MENU_CHOICES,
+                                 default='Classic')
+    cooking_time = models.IntegerField(
+        verbose_name='Время приготовления, мин.')
+    calories = models.IntegerField(verbose_name='Калорий на 100г.')
+    fats = models.IntegerField(verbose_name='Жиров на 100г.')
+    proteins = models.IntegerField(verbose_name='Белков на 100г.')
+    carbs = models.IntegerField(verbose_name='Углеводов на 100г.')
+    image = models.ImageField(verbose_name='Картинка',
+                              upload_to='')
+    text = models.TextField(verbose_name='Инструкция рецепта')
+
+    def __str__(self) -> str:
+        return str(self.name)
+
+    class Meta:
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
+
+
 class MealPlan(models.Model):
     client = models.OneToOneField(Client,
                                   verbose_name='Клиент',
@@ -108,6 +139,9 @@ class MealPlan(models.Model):
                                        verbose_name='Приемов пищи в день',
                                        choices=MEAL_NUMBER_CHOICES,
                                        default='3')
+    recipes = models.ManyToManyField(Recipe,
+                                     verbose_name='Рецепты',
+                                     related_name='meal_plans')
 
     class Meta:
         verbose_name = 'План питания'
@@ -115,38 +149,6 @@ class MealPlan(models.Model):
 
     def __str__(self) -> str:
         return str(self.allergies)
-
-
-class Recipe(models.Model):
-    name = models.CharField(max_length=250,
-                            verbose_name='Название рецепта')
-    MENU_CHOICES = [
-        ('Classic', 'Classic'),
-        ('Low Сarb', 'Low Сarb'),
-        ('Vegetarian', 'Vegetarian'),
-        ('Keto', 'Keto'),
-    ]
-    menu_type = models.CharField(verbose_name='Тип меню',
-                                 max_length=10,
-                                 choices=MENU_CHOICES,
-                                 default='Classic')
-    cooking_time = models.IntegerField(
-        verbose_name='Время приготовления, мин.')
-    calories = models.IntegerField(verbose_name='Калорий на 100г.')
-    fats = models.IntegerField(verbose_name='Жиров на 100г.')
-    proteins = models.IntegerField(verbose_name='Белков на 100г.')
-    carbs = models.IntegerField(verbose_name='Углеводов на 100г.')
-    meal_plans = models.ManyToManyField(MealPlan,
-                                        verbose_name='Планы питания',
-                                        related_name='recipes')
-
-    def __str__(self) -> str:
-        return str(self.name)
-
-    class Meta:
-        verbose_name = 'Рецепт'
-        verbose_name_plural = 'Рецепты'
-
 
 
 class FoodList(models.Model):
@@ -178,36 +180,3 @@ class DishType(models.Model):
     class Meta:
         verbose_name = 'Разновидность бюда'
         verbose_name_plural = 'Разновидности блюд'
-
-
-class Image(models.Model):
-    recipe = models.ForeignKey(Recipe,
-                               on_delete=models.CASCADE,
-                               related_name='images')
-    image = models.ImageField(verbose_name='Картинка',
-                              upload_to='')
-    image_position = models.IntegerField(verbose_name='Позиция картинки',
-                                         null=False,
-                                         blank=False,
-                                         default=0)
-
-    class Meta:
-        ordering = ['image_position']
-        verbose_name = 'Картинка рецепта'
-        verbose_name_plural = 'Картинки рецептов'
-
-
-class Description(models.Model):
-    recipe = models.ForeignKey(Recipe,
-                               on_delete=models.CASCADE,
-                               related_name='descriptions')
-    text = models.TextField(verbose_name='Инструкция рецепта')
-    text_position = models.IntegerField(verbose_name='Позиция текста',
-                                        null=False,
-                                        blank=False,
-                                        default=0)
-
-    class Meta:
-        ordering = ['text_position']
-        verbose_name = 'Описание рецепта'
-        verbose_name_plural = 'Описания рецептов'
