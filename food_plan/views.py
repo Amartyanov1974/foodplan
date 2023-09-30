@@ -205,41 +205,113 @@ def registration(request):
     return render(request, 'registration.html' )
 
 def order(request):
-    if request.user.is_authenticated:
-        client = Client.objects.get(user=request.user)
-        context = {
-            'username': request.session['user_name'],
-            'email': client.user_email,
-            }
-        return render(request, 'order.html', context=context)
-    return render(request, 'auth.html' )
+    if not request.user.is_authenticated or request.user.username=='root':
+        return redirect('auth')
+    client = Client.objects.get(user=request.user)
+    context = {
+        'username': client.user_name,
+        }
+    return render(request, 'order.html', context=context)
 
 def card(request):
     """
     Бесплатный рецепт
 
-    Заменить значения из базы
+    Взять значения из базы
     """
-    if request.user.is_authenticated:
-        client = Client.objects.get(user=request.user)
+    if not request.user.is_authenticated:
+        return redirect('auth')
+    client = Client.objects.get(user=request.user)
 
-        ingredients = {'картошка': '500 гр', 'тушенка': '1 банка', }
-        name_recipe = 'Картошка с мясом'
-        recipe_description = 'Почистить картошку, нарезать кубиками. Через 10 минут добавить тушенку. Жарить еще 10 минут.'
-        total_calories = 10000
-        """
-        Адрес картинки при текущей структуре базы будет recipe.images.image.url
-        """
-        img_url = ''
+    ingredients = {'картошка': '500 гр', 'тушенка': '1 банка', }
+    name_recipe = 'Картошка с мясом'
+    recipe_description = 'Почистить картошку, нарезать кубиками. Через 10 минут добавить тушенку. Жарить еще 10 минут.'
+    total_calories = 10000
+
+    img_url = ''
+
+    context = {
+        'username': request.session['user_name'],
+        'name_recipe': name_recipe,
+        'recipe_description': recipe_description,
+        'total_calories': total_calories,
+        'ingredients': sorted(ingredients.items()),
+        }
+    return render(request, 'card.html', context=context)
+
+def order_message(request):
+    context = {
+        'message': request.session.get('message'),
+        }
+    request.session['message'] =''
+    return render(request, 'order.html', context=context)
+
+def purchase(request):
+    if not request.user.is_authenticated or request.user.username=='root':
+        return redirect('auth')
+    client = Client.objects.get(user=request.user)
+    if not 'foodtype' in request.POST:
+        request.session['message'] = 'Выберите тип меню'
+        return redirect('order_message')
+    if request.method == 'POST' and not 'price' in request.POST:
+        foodtype = request.POST['foodtype']
+        limitation = request.POST['limitation']
+        meal = []
+        breakfast = int(request.POST['breakfast'])
+        if breakfast: meal.append('Завтрак')
+        lunch = int(request.POST['lunch'])
+        if lunch: meal.append('Обед')
+        dinner = int(request.POST['dinner'])
+        if dinner: meal.append('Ужин')
+        dessert = int(request.POST['dessert'])
+        if dessert: meal.append('Десерт')
+        number_persons = int(request.POST['number_persons'])
+        allergy = []
+        # Рыба и морепродукты
+        allergy1 = bool(request.POST.get('allergy1', False))
+        if allergy1: allergy.append('Рыба и морепродукты')
+        # Мясо
+        allergy2 = bool(request.POST.get('allergy2', False))
+        if allergy2: allergy.append('Мясо')
+        # Зерновые
+        allergy3 = bool(request.POST.get('allergy3', False))
+        if allergy3: allergy.append('Зерновые')
+        # Продукты пчеловодства
+        allergy4 = bool(request.POST.get('allergy4', False))
+        if allergy4: allergy.append('Продукты пчеловодства')
+        # Орехи и бобовые
+        allergy5 = bool(request.POST.get('allergy5', False))
+        if allergy5: allergy.append('Орехи и бобовые')
+        # Молочные продукты
+        allergy6 = bool(request.POST.get('allergy6', False))
+        if allergy6: allergy.append('Молочные продукты')
+        if not allergy: allergy.append('Нет')
+
+
+
+        description = {'foodtype': foodtype, 'limitation': limitation,
+                       'breakfast': breakfast, 'lunch': lunch,
+                       'dinner':dinner, 'dessert': dessert,
+                       'number_persons': number_persons, 'allergy1': allergy1,
+                       'allergy2' :allergy2, 'allergy3': allergy3,
+                       'allergy4': allergy4, 'allergy5': allergy5,
+                       'allergy6': allergy6}
+        print(description)
+
+        foodtype_dict = {'veg': 'Вегетарианское', 'keto': 'Кето', 'low': 'Низкоуглеводное', 'classic': 'Классическое'}
+
+
+
+        descriptions = f'Тип питания: {foodtype_dict[foodtype]}, срок: {limitation}, Количество персон: {number_persons}, Аллергия: {allergy}, Количество приемов пищи: {meal}'
+
 
 
 
         context = {
-            'username': request.session['user_name'],
-            'name_recipe': name_recipe,
-            'recipe_description': recipe_description,
-            'total_calories': total_calories,
-            'ingredients': sorted(ingredients.items()),
+            'username': client.user_name,
+            'descriptions': descriptions,
+            'price': 10000,
             }
-        return render(request, 'card.html', context=context)
-    return render(request, 'card.html', )
+
+        context.update(description)
+        return render(request, 'order.html', context=context)
