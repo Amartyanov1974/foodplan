@@ -2,23 +2,7 @@
 {% load static %}
 {% block main %}
 <body>
-    <header>
-        <nav class="navbar navbar-light fixed-top navbar__opacity">
-            <div class="container">
-                <a class="navbar-brand" href="#">
-                    <img src="{% static 'img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
-                </a>
-                {% if username %}
-                    <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green" onclick="location.href = '/lk'">Личный кабинет: {{username}}</button>
-                    <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green" onclick="location.href = '/deauth'">Выйти</button>
-                {% else %}
-                    <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green" onclick="location.href = '/auth'">Войти</button>
-                    <!-- Кнопка для тестирования оплаты, тестовая карта 4111 1111 1111 1111 срок 12/26  CVC 098 -->
-                    <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green" onclick="location.href = '/payment'">Тест оплаты</button>
-                {% endif %}
-            </div>
-        </nav>
-    </header>
+    {% include "header.html" %}
     <main style="margin-top: calc(2rem + 85px);">
         <section class="foodplan__head_bg">
             <div class="container">
