@@ -215,6 +215,11 @@ def order(request):
     return render(request, 'auth.html' )
 
 def card(request):
+    """
+    Бесплатный рецепт
+
+    Заменить значения из базы
+    """
     if request.user.is_authenticated:
         client = Client.objects.get(user=request.user)
 
