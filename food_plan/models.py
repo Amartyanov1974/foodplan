@@ -13,6 +13,18 @@ class Foodstuff(models.Model):
                                 decimal_places=2)
     weight = models.FloatField(verbose_name='Вес в кг',
                                default=0.1)
+    CATEGORY_CHOICES = [
+        ('рыба', 'рыба'),
+        ('мясо', 'мясо'),
+        ('зерновые продукты', 'зерновые продукты'),
+        ('продукты пчеловодства', 'продукты пчеловодства'),
+        ('орехи', 'орехи'),
+        ('бобовые продукты', 'бобовые продукты'),
+        ('молочные продукты', 'молочные продукты'),
+    ]
+    category = models.CharField(max_length=21,
+                                choices=CATEGORY_CHOICES,
+                                verbose_name='Категория')
 
     class Meta:
         verbose_name = 'Все продукты'
@@ -20,6 +32,25 @@ class Foodstuff(models.Model):
 
     def __str__(self) -> str:
         return str(self.name)
+
+
+class Transaction(models.Model):
+    ORDER_CHOICES = [
+        ('1 month', '1'),
+        ('3 month', '3'),
+        ('6 month', '6'),
+        ('9 month', '9'),
+        ('12 month', '12'),
+    ]
+    order_name = models.CharField(verbose_name='Название подписки',
+                                  choices=ORDER_CHOICES,
+                                  max_length=8)
+    date = models.DateField(verbose_name='Дата платежа')
+
+    class Meta:
+        ordering = ['date']
+        verbose_name = 'Транзакция'
+        verbose_name_plural = 'Транзакции'
 
 
 class Client(models.Model):
@@ -41,9 +72,10 @@ class Client(models.Model):
                                         null=True,
                                         blank=True,
                                         default=None)
-    free_recipes = models.IntegerField(
-                    verbose_name='Доступно бесплатных рецептов',
-                    default=3)
+    transaction = models.ForeignKey(Transaction,
+                                    verbose_name='Тразакции',
+                                    related_name='client',
+                                    on_delete=models.CASCADE)
 
     @property
     def user_email(self):
@@ -59,10 +91,6 @@ class Client(models.Model):
 
     def __str__(self):
         return f'{self.user_name} {self.user_email}'
-
-    def update_free_recipe(self):
-        if self.free_recipes:
-            self.free_recipes -= 1
 
 
 class Recipe(models.Model):
@@ -87,6 +115,8 @@ class Recipe(models.Model):
     image = models.ImageField(verbose_name='Картинка',
                               upload_to='')
     text = models.TextField(verbose_name='Инструкция рецепта')
+    is_free = models.BooleanField(verbose_name='Бесплатный рецепт',
+                                  default=False)
 
     def __str__(self) -> str:
         return str(self.name)
@@ -161,9 +191,6 @@ class FoodList(models.Model):
                                default=0.1)
     # Add unit price calculation for each list_of_products
     # depending on the number of persons
-
-    def calculate_budget(self):
-        pass
 
     class Meta:
         verbose_name = 'Список продуктов'
