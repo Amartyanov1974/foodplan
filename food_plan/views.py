@@ -224,7 +224,6 @@ def card(request):
     client = Client.objects.get(user=request.user)
     recipes = Recipe.objects.filter(is_free=True)
     recipe = choice(recipes)
-    print(recipe)
 
     ingredients = {'инградиент1': '100 гр', 'инградиент2': '200 гр', 'инградиент3': '50 гр', }
 

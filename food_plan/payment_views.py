@@ -13,6 +13,7 @@ def get_payment(request):
         meal_plan = request.GET.get('meal_plan')
         username = request.GET.get('username')
         limitation = request.GET.get('limitation')
+        path = request.build_absolute_uri('/')
 
         payment = Payment.create({
             "amount": {
@@ -21,7 +22,7 @@ def get_payment(request):
             },
             "confirmation": {
                 "type": "redirect",
-                "return_url": "http://127.0.0.1:8000/accept_payment/",
+                "return_url": f"{path}accept_payment/",
             },
             "capture": True,
             "description": f"Оплата подписки для пользователя {username}",
