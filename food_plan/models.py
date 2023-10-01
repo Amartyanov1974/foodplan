@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.html import format_html
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from datetime import date, datetime
+from dateutil.relativedelta import relativedelta
 
 User._meta.get_field('email')._unique = True
 
@@ -92,6 +96,17 @@ class Client(models.Model):
     @property
     def user_name(self):
         return self.user.first_name
+    
+    @property
+    def is_subscription_active(self):
+        if timezone.now() < self.subscription_expiration_date:
+            self.subscription = 'P'
+            self.save()
+            return True
+        else:
+            self.subscription = 'R'
+            self.save()
+            return False
 
     class Meta:
         verbose_name = 'Клиент'
@@ -135,6 +150,13 @@ class Transaction(models.Model):
         verbose_name = 'Транзакция'
         verbose_name_plural = 'Транзакции'
 
+@receiver(post_save, sender=Transaction)
+def change_subscription_status(sender, instance, created, **kwargs):
+    if instance.status == 'succeeded':
+        client = instance.client
+        subscription_expiration_date = instance.date + relativedelta(months=+int(instance.order_name))
+        client.subscription_expiration_date = subscription_expiration_date
+        client.save()
 
 class Recipe(models.Model):
     name = models.CharField(max_length=250,

@@ -42,10 +42,11 @@ def get_payment(request):
 def accept_payment(request):
     transaction = Transaction.objects.filter(client=Client.objects.get(user=request.user)).last()
 
-    Configuration.account_id = '260372'
-    Configuration.secret_key = 'test_hVLSX3JPjbUjqdKQZUUG9wyNDYkFVWQPfv41oCnQD9o'
+    Configuration.account_id = settings.SHOP_ACCOUNT_ID
+    Configuration.secret_key = settings.SHOP_SECRET_KEY
     payment_id = transaction.transaction_id
     payment = Payment.find_one(payment_id)
     transaction.status = payment.status
     transaction.save()
+    transaction.client.is_subscription_active
     return render(request, 'accept_payment.html')
