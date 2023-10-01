@@ -290,7 +290,12 @@ def purchase(request):
         """
         Здесь нужно выбрать рецепты и посчитать стоимость плана питания
         """
-        price = 10000
+        price_list = {
+            '1 мес.': 500,
+            '3 мес.': 1400,
+            '6 мес.': 2550,
+            '12 мес.': 4800 
+        }
 
         # Все параметры выбора рецептов в одном словаре, вдруг понадобиться
         # description = {'foodtype': foodtype, 'limitation': limitation,
@@ -303,13 +308,24 @@ def purchase(request):
         # print(description)
 
         foodtype_dict = {'veg': 'Вегетарианское', 'keto': 'Кето', 'low': 'Низкоуглеводное', 'classic': 'Классическое'}
+        meal_plan = {
+            "food_type": foodtype_dict[foodtype],
+            "limitation": limitation,
+            "number_persons": number_persons,
+            "allergy": allergy,
+            "meal": meal
+        }
+        
         descriptions = f'Тип питания: {foodtype_dict[foodtype]}, срок: {limitation}, Количество персон: {number_persons}, Аллергия: {allergy}, Количество приемов пищи: {meal}'
-
+        price = price_list[f'{meal_plan["limitation"]}']
         context = {
             'username': client.user_name,
             'descriptions': descriptions,
             'price': price,
+            'meal_plan': meal_plan,
+            'limitation': limitation
             }
+        
 
-        context.update(description)
+        # context.update({'descriptions': descriptions})
         return render(request, 'order.html', context=context)

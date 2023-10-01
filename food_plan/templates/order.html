@@ -184,9 +184,14 @@
                     <label class="form-label me-2">{{descriptions}}</label>
                     <button form="order" type="submit" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Пересчитать стоимость</button>
                 </form>
-                <form id="order2" class="card d-flex flex-row align-items-baseline mb-5 p-3 foodplan__bg_grey">
+                <form action="{% url 'payment' %}" method="get" id="order2" class="card d-flex flex-row align-items-baseline mb-5 p-3 foodplan__bg_grey">
                     <label for="exampleInputPassword1" class="form-label me-2">Стоимость</label>
                     <input type="text" class="form-control me-2" id="password"  name="price" value="{{price}} рублей" readonly>
+                    <input type="hidden" name="price1" value="{{ price }}">
+
+                    <input type="hidden" name="username" value="{{ username }}">
+                    <input type="hidden" name="limitation" value="{{ limitation }}">
+
                     <button form="order2" type="submit" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Оплатить</button>
                 </form>
                 {% endif %}
