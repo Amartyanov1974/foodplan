@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .models import Client
+from .models import Client, Recipe
 from django.conf import settings
 
 User._meta.get_field('email')._unique = True
@@ -222,19 +222,15 @@ def card(request):
     if not request.user.is_authenticated:
         return redirect('auth')
     client = Client.objects.get(user=request.user)
+    recipes = Recipe.objects.filter(is_free=True)
+    recipe = choice(recipes)
+    print(recipe)
 
-    ingredients = {'картошка': '500 гр', 'тушенка': '1 банка', }
-    name_recipe = 'Картошка с мясом'
-    recipe_description = 'Почистить картошку, нарезать кубиками. Через 10 минут добавить тушенку. Жарить еще 10 минут.'
-    total_calories = 10000
-
-    img_url = ''
+    ingredients = {'инградиент1': '100 гр', 'инградиент2': '200 гр', 'инградиент3': '50 гр', }
 
     context = {
         'username': request.session['user_name'],
-        'name_recipe': name_recipe,
-        'recipe_description': recipe_description,
-        'total_calories': total_calories,
+        'recipe': recipe,
         'ingredients': sorted(ingredients.items()),
         }
     return render(request, 'card.html', context=context)
@@ -294,7 +290,7 @@ def purchase(request):
             '1 мес.': 500,
             '3 мес.': 1400,
             '6 мес.': 2550,
-            '12 мес.': 4800 
+            '12 мес.': 4800
         }
 
         # Все параметры выбора рецептов в одном словаре, вдруг понадобиться
@@ -315,7 +311,7 @@ def purchase(request):
             "allergy": allergy,
             "meal": meal
         }
-        
+
         descriptions = f'Тип питания: {foodtype_dict[foodtype]}, срок: {limitation}, Количество персон: {number_persons}, Аллергия: {allergy}, Количество приемов пищи: {meal}'
         price = price_list[f'{meal_plan["limitation"]}']
         context = {
@@ -325,7 +321,7 @@ def purchase(request):
             'meal_plan': meal_plan,
             'limitation': limitation
             }
-        
+
 
         # context.update({'descriptions': descriptions})
         return render(request, 'order.html', context=context)
