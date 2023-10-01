@@ -5,7 +5,7 @@ from django.utils.html import format_html
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    fields = ('menu_type', 'cooking_time', 'calories',
+    fields = ('menu_type', 'is_free', 'text', 'cooking_time', 'calories',
                     'fats', 'proteins', 'carbs', 'image', 'preview_image')
     readonly_fields = ('preview_image',)
     list_display = ['menu_type', 'cooking_time', 'calories',
