@@ -8,7 +8,7 @@ class RecipeAdmin(admin.ModelAdmin):
     fields = ('name', 'menu_type', 'is_free', 'text', 'cooking_time', 'calories',
                     'fats', 'proteins', 'carbs', 'image', 'preview_image')
     readonly_fields = ('preview_image',)
-    list_display = ['menu_type', 'cooking_time', 'calories',
+    list_display = ['name', 'menu_type', 'cooking_time', 'calories',
                     'fats', 'proteins', 'carbs']
     def preview_image(self, obj):
         return format_html('<img src="{}" height="200"/>',
