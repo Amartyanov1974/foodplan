@@ -30,11 +30,10 @@ CATEGORY_CHOICES = [
 ]
 
 ORDER_CHOICES = [
-    ('1 month', '1'),
-    ('3 month', '3'),
-    ('6 month', '6'),
-    ('9 month', '9'),
-    ('12 month', '12'),
+    ('1', '1 мес.'),
+    ('3', '3 мес.'),
+    ('6', '6 мес.'),
+    ('12', '12 мес.'),
 ]
 
 SUBSCRIPTION_CHOICES = [
@@ -106,7 +105,7 @@ class Transaction(models.Model):
     order_name = models.CharField(verbose_name='Название подписки',
                                   choices=ORDER_CHOICES,
                                   max_length=8)
-    date = models.DateField(verbose_name='Дата платежа',
+    date = models.DateTimeField(verbose_name='Дата платежа',
                             default=timezone.now,
                             db_index=True)
 
@@ -114,6 +113,22 @@ class Transaction(models.Model):
                                     verbose_name='Клиент',
                                     related_name='transaction',
                                     on_delete=models.CASCADE)
+    transaction_id = models.CharField(
+        verbose_name='id транзакции',
+        max_length=40,
+        null=True
+    )
+    status = models.CharField(
+        verbose_name='статус оплаты',
+        max_length=40,
+        null=True
+    )
+    price = models.DecimalField(
+        verbose_name='Цена',
+        max_digits=6,
+        decimal_places=0,
+        null=True
+    )
 
     class Meta:
         ordering = ['date']
