@@ -140,6 +140,9 @@ class Recipe(models.Model):
     is_free = models.BooleanField(verbose_name='Бесплатный рецепт',
                                   default=False)
 
+    def preview_image(self):
+        return format_html('<img src="{}" height="200" />', self.image.url)
+
     def __str__(self) -> str:
         return str(self.name)
 
