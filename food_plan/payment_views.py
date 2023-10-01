@@ -50,4 +50,8 @@ def accept_payment(request):
     transaction.status = payment.status
     transaction.save()
     transaction.client.is_subscription_active
-    return render(request, 'accept_payment.html')
+    client = Client.objects.get(user=request.user)
+    context = {
+        'username': client.user_name,
+        }
+    return render(request, 'accept_payment.html', context=context)
