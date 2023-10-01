@@ -1,12 +1,18 @@
 from django.contrib import admin
 from food_plan.models import (Client, MealPlan, FoodList,
                               Foodstuff, Recipe, Transaction)
-
+from django.utils.html import format_html
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    fields = ('menu_type', 'cooking_time', 'calories',
+                    'fats', 'proteins', 'carbs', 'image', 'preview_image')
+    readonly_fields = ('preview_image',)
     list_display = ['menu_type', 'cooking_time', 'calories',
                     'fats', 'proteins', 'carbs']
+    def preview_image(self, obj):
+        return format_html('<img src="{}" height="200"/>',
+                           obj.image.url)
 
 
 @admin.register(Client)
