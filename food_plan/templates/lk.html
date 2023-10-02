@@ -100,36 +100,50 @@
                                         <div class="col-2">
                                             <img src="{% static 'img/circle1.png' %}" alt="" class="w-100">
                                         </div>
+                                        {% if meal_plan %}
+                                            <div class="col-10 col-md-10">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <h2>Персональный план пользователя {{ username }}</h2>
+                                                    </div>
+                                                    <div class="col-md-12 col-lg-9">
+                                                        <h6>{{ meal_plan.menu_type }}</h6>
+                                                    </div>
+                                                    <div class="col-md-12 col-lg-3 text-muted d-flex flex-column justify-content-between">
+                                                        <div class="d-flex flex-row justify-content-between">
+                                                            <small>Персоны: </small><small>{{ number_persons }}</small>
+                                                        </div>
+                                                        <div class="d-flex flex-row justify-content-between">
+                                                            <small>Аллергии: </small>
+                                                            {% for allergen in allergens %}
+                                                                <small>
+                                                                    {{ allergen }}
+                                                                </small>
+                                                            {% endfor %}
+                                                        </div>
+                                                        <!-- <div class="d-flex flex-row justify-content-between">
+                                                            <small>Калории: </small><small>1400</small>
+                                                        </div> -->
+                                                        <div class="d-flex flex-row justify-content-between">
+                                                            <small>Приемы пищи: </small>
+                                                            {% for dish_type in dish_types %}
+                                                                <small>
+                                                                    {{ dish_type }}
+                                                                </small>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% else %}
                                         <div class="col-10 col-md-10">
                                             <div class="row">
                                                 <div class="col-12">
-                                                    <h2>Название подписки</h2>
-                                                </div>
-                                                <div class="col-md-12 col-lg-9">
-                                                    <h6>Описание подписки Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius saepe ea nobis necessitatibus
-                                                        consectetur rem! Eligendi assumenda facere sint quibusdam dolorem quasi doloribus nemo, temporibus molestiae
-                                                        distinctio cum laboriosam sed. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius saepe ea nobis
-                                                        necessitatibus consectetur rem! Eligendi
-                                                        assumenda facere sint quibusdam dolorem quasi doloribus nemo, temporibus molestiae distinctio cum laboriosam
-                                                        sed.</h6>
-                                                </div>
-                                                <div class="col-md-12 col-lg-3 text-muted d-flex flex-column justify-content-between">
-                                                    <div class="d-flex flex-row justify-content-between">
-                                                        <small>Персоны: </small><small>3</small>
-                                                    </div>
-                                                    <div class="d-flex flex-row justify-content-between">
-                                                        <small>Аллергии: </small><small>нет</small>
-                                                    </div>
-                                                    <div class="d-flex flex-row justify-content-between">
-                                                        <small>Калории: </small><small>1400</small>
-                                                    </div>
-                                                    <div class="d-flex flex-row justify-content-between">
-                                                        <small>Кол-во приёмов пищи: </small><small>4</small>
-                                                    </div>
-
+                                                    <h2>Тут будет описание Вашей подписки</h2>
                                                 </div>
                                             </div>
                                         </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
