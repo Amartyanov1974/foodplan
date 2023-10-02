@@ -1,7 +1,15 @@
 from django.contrib import admin
-from food_plan.models import (Client, MealPlan, FoodList, Allergen,
+from food_plan.models import (Client, MealPlan, FoodItem, Allergen,
                               Foodstuff, Recipe, Transaction, DishType)
 from django.utils.html import format_html
+
+
+
+class FoodItemInline(admin.TabularInline):
+    model = FoodItem
+    extra = 0
+
+
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
@@ -13,6 +21,9 @@ class RecipeAdmin(admin.ModelAdmin):
     def preview_image(self, obj):
         return format_html('<img src="{}" height="200"/>',
                            obj.image.url)
+    inlines = [
+        FoodItemInline
+    ]
 
 
 @admin.register(Client)
@@ -22,14 +33,14 @@ class ClientAdmin(admin.ModelAdmin):
     readonly_fields = ['user']
 
 
-@admin.register(FoodList)
-class FoodListAdmin(admin.ModelAdmin):
+@admin.register(FoodItem)
+class FoodItemAdmin(admin.ModelAdmin):
     pass
 
 
 @admin.register(Foodstuff)
 class FoodstuffAdmin(admin.ModelAdmin):
-    list_display = ['name', 'weight', 'category']
+    list_display = ['name', 'category']
 
 
 @admin.register(MealPlan)

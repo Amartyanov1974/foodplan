@@ -244,12 +244,12 @@ def card(request):
         recipe = choice(recipes)
     except:
         recipe = ''
-    ingredients = {'инградиент1': '100 гр', 'инградиент2': '200 гр', 'инградиент3': '50 гр', }
-
+    ingredients = recipe.food_items.all()
     context = {
         'username': request.session['user_name'],
         'recipe': recipe,
-        'ingredients': sorted(ingredients.items()),
+        'ingredients': ingredients,
+
         }
     return render(request, 'card.html', context=context)
 

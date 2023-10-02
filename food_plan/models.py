@@ -5,6 +5,7 @@ from django.utils.html import format_html
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from dateutil.relativedelta import relativedelta
+from django.core.validators import MinValueValidator
 
 User._meta.get_field('email')._unique = True
 
@@ -55,8 +56,6 @@ MENU_CHOICES = [
 class Foodstuff(models.Model):
     name = models.CharField(verbose_name='Продукт',
                             max_length=200)
-    weight = models.FloatField(verbose_name='Вес в кг',
-                               default=0.1)
     category = models.CharField(max_length=21,
                                 choices=CATEGORY_CHOICES,
                                 verbose_name='Категория')
@@ -66,7 +65,7 @@ class Foodstuff(models.Model):
         verbose_name_plural = 'Все продукты'
 
     def __str__(self) -> str:
-        return f'{self.name} - {self.weight}'
+        return f'{self.name} - {self.category}'
 
 
 class Client(models.Model):
@@ -169,7 +168,7 @@ class Recipe(models.Model):
     proteins = models.IntegerField(verbose_name='Белков на 100г.')
     carbs = models.IntegerField(verbose_name='Углеводов на 100г.')
     image = models.ImageField(verbose_name='Картинка',
-                              upload_to='')
+                              upload_to='', blank=True, null=True)
     text = models.TextField(verbose_name='Инструкция рецепта')
     is_free = models.BooleanField(verbose_name='Бесплатный рецепт',
                                   default=False)
@@ -252,14 +251,15 @@ class MealPlan(models.Model):
 #        client.save()
 
 
-class FoodList(models.Model):
-    recipes = models.ManyToManyField(Recipe,
-                                     related_name='food_lists')
-    food_names = models.ManyToManyField(Foodstuff,
+class FoodItem(models.Model):
+    recipes = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                                     related_name='food_items')
+    food_names = models.ForeignKey(Foodstuff, on_delete=models.CASCADE,
                                         verbose_name='Продукты',
-                                        related_name='food_lists')
-    weight = models.FloatField(verbose_name='Вес в кг',
-                               default=0.1)
+                                        related_name='food_items')
+    weight = models.FloatField(verbose_name='Вес в граммах',
+                               default=100,
+                               validators=[MinValueValidator(0)])
 
     class Meta:
         verbose_name = 'Список продуктов'

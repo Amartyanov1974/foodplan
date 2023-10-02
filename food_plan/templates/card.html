@@ -35,8 +35,8 @@
                             <div class="col-12 col-sm-6">
                                 <small class="link-secondary">Ингредиенты:</small>
                                 <ul class="list-group list-group-flush">
-                                    {% for key, value in ingredients %}
-                                    <li class="list-group-item disabled"><small>{{key}} {{value}}</small></li>
+                                    {% for ingredient in ingredients %}
+                                    <li class="list-group-item disabled"><small>{{ingredient.food_names}} {{ingredient.weight}} гр</small></li>
                                     {% endfor %}
                                 </ul>
                                 <small class="link-secondary">Энегретическая ценность блюда {{recipe.calories}} ккал</small>
