@@ -107,30 +107,30 @@
                                                         <h2>Персональный план пользователя {{ username }}</h2>
                                                     </div>
                                                     <div class="col-md-12 col-lg-9">
-                                                        <h6>{{ meal_plan.menu_type }}</h6>
+                                                        <h6>{{ meal_plan.menu_type }}<br> Здесь много текста Здесь много текста Здесь много текста Здесь много текста Здесь много текста Здесь много текста</h6>
                                                     </div>
-                                                    <div class="col-md-12 col-lg-3 text-muted d-flex flex-column justify-content-between">
+                                                    <div class="col-12 col-md-12 d-flex flex-column justify-content-betwee">
                                                         <div class="d-flex flex-row justify-content-between">
                                                             <small>Персоны: </small><small>{{ meal_plan.number_persons }}</small>
                                                         </div>
                                                         <div class="d-flex flex-row justify-content-between">
                                                             <small>Аллергии: </small>
+                                                            <ul class="list-group list-group-flush">
                                                             {% for allergen in meal_plan.allergens %}
-                                                                <small>
-                                                                    {{ allergen }}
-                                                                </small>
+                                                                <li class="list-group-item disabled"><small>{{ allergen }}</small></li>
                                                             {% endfor %}
+                                                            </ul>
                                                         </div>
                                                         <!-- <div class="d-flex flex-row justify-content-between">
                                                             <small>Калории: </small><small>1400</small>
                                                         </div> -->
                                                         <div class="d-flex flex-row justify-content-between">
                                                             <small>Приемы пищи: </small>
+                                                            <ul class="list-group list-group-flush">
                                                             {% for dish_type in meal_plan.dish_types %}
-                                                                <small>
-                                                                    {{ dish_type }}
-                                                                </small>
+                                                                <li class="list-group-item disabled"><small>{{ dish_type }}</small></li>
                                                             {% endfor %}
+                                                            </ul>
                                                         </div>
                                                     </div>
                                                 </div>

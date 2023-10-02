@@ -240,8 +240,10 @@ def card(request):
         return redirect('auth')
     client = Client.objects.get(user=request.user)
     recipes = Recipe.objects.filter(is_free=True)
-    recipe = choice(recipes)
-
+    try:
+        recipe = choice(recipes)
+    except:
+        recipe = ''
     ingredients = {'инградиент1': '100 гр', 'инградиент2': '200 гр', 'инградиент3': '50 гр', }
 
     context = {

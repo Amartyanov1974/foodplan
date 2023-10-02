@@ -19,6 +19,7 @@
         </div>
         <section>
             <div class="container">
+                {% if recipe %}
                 <div class="row">
                     <div class="col-12 col-md-4 d-flex justify-content-center">
                         <div class="card foodplan__card_borderless">
@@ -43,6 +44,9 @@
                         </div>
                     </div>
                 </div>
+                {% else %}
+                <center><h1>Бесплатных рецептов нет</h1></center>
+                {% endif %}
             </div>
         </section>
     </main>
