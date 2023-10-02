@@ -111,11 +111,11 @@
                                                     </div>
                                                     <div class="col-md-12 col-lg-3 text-muted d-flex flex-column justify-content-between">
                                                         <div class="d-flex flex-row justify-content-between">
-                                                            <small>Персоны: </small><small>{{ number_persons }}</small>
+                                                            <small>Персоны: </small><small>{{ meal_plan.number_persons }}</small>
                                                         </div>
                                                         <div class="d-flex flex-row justify-content-between">
                                                             <small>Аллергии: </small>
-                                                            {% for allergen in allergens %}
+                                                            {% for allergen in meal_plan.allergens %}
                                                                 <small>
                                                                     {{ allergen }}
                                                                 </small>
@@ -126,7 +126,7 @@
                                                         </div> -->
                                                         <div class="d-flex flex-row justify-content-between">
                                                             <small>Приемы пищи: </small>
-                                                            {% for dish_type in dish_types %}
+                                                            {% for dish_type in meal_plan.dish_types %}
                                                                 <small>
                                                                     {{ dish_type }}
                                                                 </small>

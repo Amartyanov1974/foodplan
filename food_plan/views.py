@@ -12,7 +12,7 @@ User._meta.get_field('email')._unique = True
 
 
 def get_meal_plan(client):
-    try: 
+    try:
         meal_plan = MealPlan.objects.get(client=client)
     except:
         return False
@@ -37,13 +37,10 @@ def lk(request):
     if 'user_name' in request.session:
         client = Client.objects.get(user=request.user)
         meal_plan = get_meal_plan(client)
+
         context = {
             'username': request.session['user_name'],
             'email': client.user_email,
-            'menu_type': meal_plan['menu_type'],
-            'number_persons': meal_plan['number_persons'],
-            'allergens': meal_plan['allergens'],
-            'dish_types': meal_plan['dish_types'],
             'meal_plan': meal_plan
             }
         return render(request, 'lk.html', context=context)
