@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from .models import Client, Recipe
+from food_plan.models import Client, Recipe, MealPlan, Allergen, DishType
 from django.conf import settings
 
 User._meta.get_field('email')._unique = True
@@ -281,6 +281,7 @@ def purchase(request):
         allergy6 = bool(request.POST.get('allergy6', False))
         if allergy6: allergy.append('Молочные продукты')
         if not allergy: allergy.append('Нет')
+        # Вместо 'Нет' пустого списка хватит
 
         """
         Здесь нужно выбрать рецепты и посчитать стоимость плана питания
@@ -320,7 +321,23 @@ def purchase(request):
             'meal_plan': meal_plan,
             'limitation': limitation
             }
-
+        # Сохраняем все критерии meal_plan в БД
+        get_or_create_meal_plan(meal_plan=meal_plan, client=client)
 
         # context.update({'descriptions': descriptions})
         return render(request, 'order.html', context=context)
+
+
+def get_or_create_meal_plan(meal_plan: dict, client: Client) -> MealPlan:
+    menu_type = meal_plan['food_type']
+    number_persons = meal_plan['number_persons']
+    allergens = list(Allergen.objects.filter(name__in=meal_plan['allergy']))
+    dish_types = list(DishType.objects.filter(name__in=meal_plan['meal']))
+    meal_plan, created = MealPlan.objects.get_or_create(
+                            client=client,
+                            menu_type=menu_type,
+                            number_persons=number_persons
+    )
+    meal_plan.allergens.set(allergens)
+    meal_plan.dish_types.set(dish_types)
+    return meal_plan

@@ -198,7 +198,7 @@ class Allergen(models.Model):
 
 
 class DishType(models.Model):
-    name = models.CharField(verbose_name='',
+    name = models.CharField(verbose_name='Тип блюда',
                             max_length=50)
 
     class Meta:
@@ -240,6 +240,16 @@ class MealPlan(models.Model):
 
     def __str__(self) -> str:
         return str(self.allergens)
+
+
+#@receiver(post_save, sender=MealPlan)
+#def save_meal_plan(sender, instance, created, **kwargs):
+#    client = instance.client
+#    if client:
+#        subscription_expiration_date = instance.date + relativedelta(
+#                                        months=+int(instance.order_name))
+#        client.subscription_expiration_date = subscription_expiration_date
+#        client.save()
 
 
 class FoodList(models.Model):
