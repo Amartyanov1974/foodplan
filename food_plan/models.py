@@ -4,7 +4,6 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 
 User._meta.get_field('email')._unique = True
@@ -56,9 +55,6 @@ MENU_CHOICES = [
 class Foodstuff(models.Model):
     name = models.CharField(verbose_name='Продукт',
                             max_length=200)
-    price = models.DecimalField(verbose_name='Цена',
-                                max_digits=6,
-                                decimal_places=2)
     weight = models.FloatField(verbose_name='Вес в кг',
                                default=0.1)
     category = models.CharField(max_length=21,
@@ -70,7 +66,7 @@ class Foodstuff(models.Model):
         verbose_name_plural = 'Все продукты'
 
     def __str__(self) -> str:
-        return str(self.name)
+        return f'{self.name} - {self.weight}'
 
 
 class Client(models.Model):
@@ -96,7 +92,7 @@ class Client(models.Model):
     @property
     def user_name(self):
         return self.user.first_name
-    
+
     @property
     def is_subscription_active(self):
         if timezone.now() < self.subscription_expiration_date:
@@ -121,9 +117,8 @@ class Transaction(models.Model):
                                   choices=ORDER_CHOICES,
                                   max_length=8)
     date = models.DateTimeField(verbose_name='Дата платежа',
-                            default=timezone.now,
-                            db_index=True)
-
+                                default=timezone.now,
+                                db_index=True)
     client = models.ForeignKey(Client,
                                     verbose_name='Клиент',
                                     related_name='transaction',
@@ -134,7 +129,7 @@ class Transaction(models.Model):
         null=True
     )
     status = models.CharField(
-        verbose_name='статус оплаты',
+        verbose_name='Cтатус оплаты',
         max_length=40,
         null=True
     )
@@ -154,9 +149,11 @@ class Transaction(models.Model):
 def change_subscription_status(sender, instance, created, **kwargs):
     if instance.status == 'succeeded':
         client = instance.client
-        subscription_expiration_date = instance.date + relativedelta(months=+int(instance.order_name))
+        subscription_expiration_date = instance.date + relativedelta(
+                                        months=+int(instance.order_name))
         client.subscription_expiration_date = subscription_expiration_date
         client.save()
+
 
 class Recipe(models.Model):
     name = models.CharField(max_length=250,
@@ -166,7 +163,7 @@ class Recipe(models.Model):
                                  choices=MENU_CHOICES,
                                  default='Classic')
     cooking_time = models.IntegerField(
-        verbose_name='Время приготовления, мин.')
+                    verbose_name='Время приготовления, мин.')
     calories = models.IntegerField(verbose_name='Калорий на 100г.')
     fats = models.IntegerField(verbose_name='Жиров на 100г.')
     proteins = models.IntegerField(verbose_name='Белков на 100г.')
@@ -188,6 +185,30 @@ class Recipe(models.Model):
         verbose_name_plural = 'Рецепты'
 
 
+class Allergen(models.Model):
+    name = models.CharField(verbose_name='Алергены',
+                            max_length=50)
+
+    class Meta:
+        verbose_name = 'Аллерген'
+        verbose_name_plural = 'Аллергены'
+
+    def __str__(self):
+        return str(self.name)
+
+
+class DishType(models.Model):
+    name = models.CharField(verbose_name='',
+                            max_length=50)
+
+    class Meta:
+        verbose_name = 'Тип блюда'
+        verbose_name_plural = 'Тип блюда'
+
+    def __str__(self):
+        return str(self.name)
+
+
 class MealPlan(models.Model):
     client = models.OneToOneField(Client,
                                   verbose_name='Клиент',
@@ -201,29 +222,24 @@ class MealPlan(models.Model):
                                  default='Classic')
     number_persons = models.IntegerField(verbose_name='Количество персон',
                                          default=1)
-    allergies = models.ManyToManyField(
-                    Foodstuff,
-                    verbose_name='Продукты, на которые есть алергия',
-                    related_name='meal_plans',
-                    blank=True,
-                    default=None)
-    calories = models.CharField(verbose_name='Калорий в день',
-                                max_length=12,
-                                choices=CALORIE_CHOICES,
-                                default='Balance 1800')
+    allergens = models.ManyToManyField(Allergen,
+                                       verbose_name='Аллергены',
+                                       related_name='meal_plans',
+                                       blank=True)
     recipes = models.ManyToManyField(Recipe,
                                      verbose_name='Рецепты',
-                                     related_name='meal_plans')
-    dish_type = models.CharField(verbose_name='Тип блюда',
-                                 choices=DISH_CHOICES,
-                                 max_length=9)
+                                     related_name='meal_plans',
+                                     blank=True)
+    dish_types = models.ManyToManyField(DishType,
+                                        verbose_name='Тип блюда',
+                                        max_length=50)
 
     class Meta:
         verbose_name = 'План питания'
         verbose_name_plural = 'Планы питания'
 
     def __str__(self) -> str:
-        return str(self.allergies)
+        return str(self.allergens)
 
 
 class FoodList(models.Model):

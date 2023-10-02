@@ -1,6 +1,6 @@
 from django.contrib import admin
-from food_plan.models import (Client, MealPlan, FoodList,
-                              Foodstuff, Recipe, Transaction)
+from food_plan.models import (Client, MealPlan, FoodList, Allergen,
+                              Foodstuff, Recipe, Transaction, DishType)
 from django.utils.html import format_html
 
 @admin.register(Recipe)
@@ -29,14 +29,24 @@ class FoodListAdmin(admin.ModelAdmin):
 
 @admin.register(Foodstuff)
 class FoodstuffAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'weight', 'category']
+    list_display = ['name', 'weight', 'category']
 
 
 @admin.register(MealPlan)
 class MealPlanAdmin(admin.ModelAdmin):
-    list_display = ['client', 'menu_type',
-                    'number_persons', 'calories']
+    list_display = ['client', 'menu_type', 'number_persons']
+
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ['order_name', 'date']
+
+
+@admin.register(Allergen)
+class AllergenAdmin(admin.ModelAdmin):
+    list_display = ['name']
+
+
+@admin.register(DishType)
+class DishTypeAdmin(admin.ModelAdmin):
+    list_display = ['name']
