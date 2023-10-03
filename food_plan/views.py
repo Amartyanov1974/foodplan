@@ -40,7 +40,7 @@ def lk(request):
 
         context = {
             'username': request.session['user_name'],
-            'email': client.user_email,
+            'client': client,
             'meal_plan': meal_plan
             }
         return render(request, 'lk.html', context=context)
