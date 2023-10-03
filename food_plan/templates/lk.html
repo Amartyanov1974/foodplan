@@ -66,7 +66,7 @@
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <label for="exampleInputEmail1" class="form-label">Email</label>
                                             </div>
-                                            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" value={{email}}>
+                                            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" value={{client.user_email}}>
                                             <button type="submit" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Изменить
                                                 почту</button>
                                         </div>
@@ -107,7 +107,7 @@
                                                         <h2>Персональный план пользователя {{ username }}</h2>
                                                     </div>
                                                     <div class="col-md-12 col-lg-9">
-                                                        <h6>{{ meal_plan.menu_type }}<br><a href="{% url 'pay_card' %}">Ваш рецепт нового блюда</a></h6>
+                                                        <h6>{{ meal_plan.menu_type }}<br>Доступ: До {{client.subscription_expiration_date }}<br><a href="{% url 'pay_card' %}">Ваш рецепт нового блюда</a></h6>
                                                     </div>
                                                     <div class="col-12 col-md-12 d-flex flex-column justify-content-betwee">
                                                         <div class="d-flex flex-row justify-content-between">
