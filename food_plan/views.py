@@ -273,6 +273,12 @@ def pay_card(request):
     foodtype_dict = {'Вегетарианское': 'Vegetarian', 'Кето': 'Keto', 'Низкоуглеводное': 'Low Сarb', 'Классическое': 'Classic'}
     print(foodtype_dict[client.meal_plan.menu_type])
     recipes = Recipe.objects.filter(menu_type__exact=foodtype_dict[client.meal_plan.menu_type])
+
+    """
+    Здесь добавить проверку на алергики
+    """
+
+
     for recipe in recipes:
         print(recipe.menu_type)
     try:
