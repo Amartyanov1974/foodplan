@@ -30,12 +30,23 @@ class Command(BaseCommand):
                      'Молочные продукты']
         dishtypes = ['Завтрак', 'Обед', 'Ужин', 'Десерт']
 
+        category = ['рыба', 'мясо', 'зерновые продукты', 'продукты пчеловодства', 'орехи', 'бобовые продукты', 'молочные продукты', 'зелень', 'птица', 'овощи', 'фрукты']
+        for num in range(3*count):
+            name_item = f'Продукт номер {num}'
+            category_item = choice(category)
+            foodstuff, created = Foodstuff.objects.get_or_create(
+                name=name_item,
+                defaults={'category': category_item})
+            print(foodstuff, created)
+
+
         for allergen in allergens:
-            allerg, created = Allergen.objects.update_or_create(name=allergen)
+            allerg, created = Allergen.objects.get_or_create(name=allergen)
             print(allerg, created)
         for dishtype in dishtypes:
-            disht, created = DishType.objects.update_or_create(name=dishtype)
+            disht, created = DishType.objects.get_or_create(name=dishtype)
             print(disht, created)
+
         menu = ['Classic', 'Low Сarb', 'Vegetarian', 'Keto']
         cooking_time = [15, 20, 25, 30, 35, 45, 50]
         calories = [1000, 1500, 2000, 2500, 3000, 3500, 4000]
@@ -55,36 +66,23 @@ class Command(BaseCommand):
             img_url_item = choice(image_url)
             text = f'{name_item} входит в {menu_item} меню. Содержит на 100 гр. {fats_item} жиров, {proteins_item} белков, {carbs_item} углеводов. Готовится в течении {cooking_time_item}-ти минут.'
 
-            recipe, created = Recipe.objects.update_or_create(
+            recipe, created = Recipe.objects.get_or_create(
                 name=name_item,
                 defaults={'cooking_time': cooking_time_item, 'calories': calories_item, 'text': text,
-                          'fats': fats_item, 'proteins': proteins_item, 'carbs' :carbs_item, })
+                          'fats': fats_item, 'proteins': proteins_item, 'carbs' :carbs_item, 'menu_type': menu_item})
             print(recipe, created)
             if created:
                 img_url=img_url_item
                 save_image(recipe, img_url)
                 print(f'В базу добавили {recipe.name}')
 
-        category = ['рыба', 'мясо', 'зерновые продукты', 'продукты пчеловодства', 'орехи', 'бобовые продукты', 'молочные продукты', 'зелень', 'птица', 'овощи', 'фрукты']
-
-        for num in range(3*count):
-            name_item = f'Продукт номер {num}'
-            category_item = choice(category)
-            foodstuff, created = Foodstuff.objects.update_or_create(
-                name=name_item,
-                defaults={'category': category_item})
-            print(foodstuff, created)
-
-        recipies = Recipe.objects.all()
-        foodstuffes = Foodstuff.objects.all()
-        weight = [100, 150, 200, 250, 300, 350, 400]
-
-        for recipe in recipies:
+            foodstuffes = Foodstuff.objects.all()
+            weight = [100, 150, 200, 250, 300, 350, 400]
             foodstuff = sample(list(foodstuffes), 4)
             for foodstuff_item in foodstuff:
                 weight_item = choice(weight)
 
-                foodlist, created = FoodItem.objects.update_or_create(
+                foodlist, created = FoodItem.objects.get_or_create(
                     food_names=foodstuff_item, recipes=recipe,
                     weight=weight_item)
                 print(foodlist, created)

@@ -38,6 +38,7 @@ urlpatterns = [
     path('order', views.order, name='order'),
     path('order_message', views.order_message, name='order_message'),
     path('card', views.card, name='card'),
+    path('pay_card', views.pay_card, name='pay_card'),
     path('payment/', payment_views.get_payment, name='payment'),
     path('purchase', views.purchase, name='purchase'),
     path('accept_payment/', payment_views.accept_payment, name='accept_payment'),

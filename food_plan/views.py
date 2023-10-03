@@ -1,6 +1,6 @@
 import string
 from random import choice
-
+from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.core.mail import send_mail
@@ -221,6 +221,15 @@ def registration(request):
 
     return render(request, 'registration.html' )
 
+def order_message(request):
+    client = Client.objects.get(user=request.user)
+    context = {
+        'message': request.session.get('message'),
+        'username': client.user_name,
+        }
+    request.session['message'] =''
+    return render(request, 'order.html', context=context)
+
 def order(request):
     if not request.user.is_authenticated or request.user.username=='root':
         return redirect('auth')
@@ -233,13 +242,39 @@ def order(request):
 def card(request):
     """
     Бесплатный рецепт
-
-    Взять значения из базы
     """
     if not request.user.is_authenticated:
         return redirect('auth')
     client = Client.objects.get(user=request.user)
     recipes = Recipe.objects.filter(is_free=True)
+    try:
+        recipe = choice(recipes)
+        ingredients = recipe.food_items.all()
+    except:
+        recipe = ''
+        ingredients = ''
+
+    context = {
+        'username': request.session['user_name'],
+        'recipe': recipe,
+        'ingredients': ingredients,
+
+        }
+    return render(request, 'card.html', context=context)
+
+
+def pay_card(request):
+
+    if not request.user.is_authenticated:
+        return redirect('auth')
+    client = Client.objects.get(user=request.user)
+    if client.subscription_expiration_date<datetime.now().date():
+        return redirect('/')
+    foodtype_dict = {'Вегетарианское': 'Vegetarian', 'Кето': 'Keto', 'Низкоуглеводное': 'Low Сarb', 'Классическое': 'Classic'}
+    print(foodtype_dict[client.meal_plan.menu_type])
+    recipes = Recipe.objects.filter(menu_type__exact=foodtype_dict[client.meal_plan.menu_type])
+    for recipe in recipes:
+        print(recipe.menu_type)
     try:
         recipe = choice(recipes)
     except:
@@ -251,14 +286,7 @@ def card(request):
         'ingredients': ingredients,
 
         }
-    return render(request, 'card.html', context=context)
-
-def order_message(request):
-    context = {
-        'message': request.session.get('message'),
-        }
-    request.session['message'] =''
-    return render(request, 'order.html', context=context)
+    return render(request, 'pay_card.html', context=context)
 
 def purchase(request):
     if not request.user.is_authenticated or request.user.username=='root':

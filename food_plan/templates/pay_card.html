@@ -1,0 +1,57 @@
+{% extends "master.html" %}
+{% load static %}
+{% block main %}
+<body>
+    {% include "header.html" %}
+    <main style="margin-top: calc(2rem + 75px);">
+        <div class="card col-12 p-3 mb-5 foodplan__shadow">
+            <h4 class="foodplan__backButton">
+                <strong><small><a href="#" class="link-secondary fw-light"></a></small></strong>
+            </h4>
+            <a href="/" class="link-secondary fw-light foodplan__backButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="9%" height="9%" fill="currentColor" class="bi bi-arrow-left-circle"
+                    viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                    d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
+                </svg>
+            </a>
+            <h2 class="text-center"><strong>Рецепт</strong></h2>
+        </div>
+        <section>
+            <div class="container">
+                {% if recipe %}
+                <div class="row">
+                    <div class="col-12 col-md-4 d-flex justify-content-center">
+                        <div class="card foodplan__card_borderless">
+                            <img src="{{recipe.image.url}}" alt="">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8 d-flex flex-column justify-content-between">
+                        <div class="row">
+                            <h2>{{recipe.name}}</h2>
+                            <div class="col-12 col-sm-6 d-flex flex-column justify-content-between">
+                                <h6>{{recipe.text}}</h6>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <small class="link-secondary">Ингредиенты:</small>
+                                <ul class="list-group list-group-flush">
+                                    {% for ingredient in ingredients %}
+                                    <li class="list-group-item disabled"><small>{{ingredient.food_names}} {{ingredient.weight}} гр</small></li>
+                                    {% endfor %}
+                                </ul>
+                                <small class="link-secondary">Энегретическая ценность блюда {{recipe.calories}} ккал</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <center><h1>Бесплатных рецептов нет</h1></center>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    {% endblock %}
+</body>
