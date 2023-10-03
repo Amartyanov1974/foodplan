@@ -267,19 +267,34 @@ def pay_card(request):
 
     if not request.user.is_authenticated:
         return redirect('auth')
-    client = Client.objects.get(user=request.user)
+    client = Client.objects.select_related('meal_plan').get(user=request.user)
     if client.subscription_expiration_date<datetime.now().date():
         return redirect('/')
     foodtype_dict = {'Вегетарианское': 'Vegetarian', 'Кето': 'Keto', 'Низкоуглеводное': 'Low Сarb', 'Классическое': 'Classic'}
-    print(foodtype_dict[client.meal_plan.menu_type])
     recipes = Recipe.objects.filter(menu_type__exact=foodtype_dict[client.meal_plan.menu_type])
+    allergens = client.meal_plan.allergens.all()
+    recipes_done = []
     for recipe in recipes:
-        print(recipe.menu_type)
+        out = False
+        ingredients = recipe.food_items.all()
+        for allergen in allergens:
+            for ingredient in ingredients:
+                if ingredient.food_names.category==str(allergen).lower():
+                    out = True
+                    break
+            if out:
+                break
+        if out:
+            continue
+        recipes_done.append(recipe)
+
     try:
-        recipe = choice(recipes)
+        recipe = choice(recipes_done)
+        ingredients = recipe.food_items.all()
     except:
         recipe = ''
-    ingredients = recipe.food_items.all()
+        ingredients = ''
+
     context = {
         'username': request.session['user_name'],
         'recipe': recipe,
@@ -311,22 +326,22 @@ def purchase(request):
         allergy = []
         # Рыба и морепродукты
         allergy1 = bool(request.POST.get('allergy1', False))
-        if allergy1: allergy.append('Рыба и морепродукты')
+        if allergy1: allergy.append('рыба и морепродукты')
         # Мясо
         allergy2 = bool(request.POST.get('allergy2', False))
-        if allergy2: allergy.append('Мясо')
+        if allergy2: allergy.append('мясо')
         # Зерновые
         allergy3 = bool(request.POST.get('allergy3', False))
-        if allergy3: allergy.append('Зерновые')
+        if allergy3: allergy.append('зерновые продукты')
         # Продукты пчеловодства
         allergy4 = bool(request.POST.get('allergy4', False))
-        if allergy4: allergy.append('Продукты пчеловодства')
+        if allergy4: allergy.append('продукты пчеловодства')
         # Орехи и бобовые
         allergy5 = bool(request.POST.get('allergy5', False))
-        if allergy5: allergy.append('Орехи и бобовые')
+        if allergy5: allergy.append('орехи и бобовые')
         # Молочные продукты
         allergy6 = bool(request.POST.get('allergy6', False))
-        if allergy6: allergy.append('Молочные продукты')
+        if allergy6: allergy.append('молочные продукты')
         if not allergy: allergy.append('Нет')
         # Вместо 'Нет' пустого списка хватит
 

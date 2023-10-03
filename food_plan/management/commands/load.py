@@ -25,12 +25,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         count = options['count']
 
-        allergens = ['Рыба и морепродукты', 'Мясо', 'Зерновые',
-                     'Продукты пчеловодства', 'Орехи и бобовые',
-                     'Молочные продукты']
+        allergens = ['рыба и морепродукты', 'мясо', 'зерновые продукты',
+                     'продукты пчеловодства', 'орехи и бобовые',
+                     'молочные продукты']
         dishtypes = ['Завтрак', 'Обед', 'Ужин', 'Десерт']
 
-        category = ['рыба', 'мясо', 'зерновые продукты', 'продукты пчеловодства', 'орехи', 'бобовые продукты', 'молочные продукты', 'зелень', 'птица', 'овощи', 'фрукты']
+        category = ['рыба и морепродукты', 'мясо', 'зерновые', 'продукты пчеловодства', 'орехи и бобовые', 'молочные продукты', 'зелень', 'птица', 'овощи', 'фрукты']
         for num in range(3*count):
             name_item = f'Продукт номер {num}'
             category_item = choice(category)
@@ -78,7 +78,8 @@ class Command(BaseCommand):
 
             foodstuffes = Foodstuff.objects.all()
             weight = [100, 150, 200, 250, 300, 350, 400]
-            foodstuff = sample(list(foodstuffes), 4)
+            counts = [3, 4, 5]
+            foodstuff = sample(list(foodstuffes), choice(counts))
             for foodstuff_item in foodstuff:
                 weight_item = choice(weight)
 
